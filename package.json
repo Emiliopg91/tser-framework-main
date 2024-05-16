@@ -11,7 +11,6 @@
     "dev": "tsc -b -w",
     "docs": "typedoc --theme wiki-js --tsconfig ./tsconfig.json src/**/*",
     "test": "echo 'No tests for now!'",
-    "postinstall": "pnpm link ..\\tser-framework-commons",
     "release": "npm version patch && pnpm run build && npm publish && git push"
   },
   "author": "Emiliopg91",
