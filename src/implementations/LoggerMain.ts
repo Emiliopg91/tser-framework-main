@@ -12,7 +12,7 @@ export class LoggerMain {
   private constructor() {}
 
   private static logFolder = OSHelper.getHome() + path.sep + app.name + path.sep + "logs";
-  private static logFile = LoggerMain.logFolder + path.sep + "application.log";
+  public static logFile = LoggerMain.logFolder + path.sep + "application.log";
 
   /**
    * The current log level.
