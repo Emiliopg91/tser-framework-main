@@ -11,7 +11,7 @@
     "dev": "tsc -b -w",
     "docs": "typedoc --theme wiki-js --tsconfig ./tsconfig.json src/**/*",
     "test": "echo 'No tests for now!'",
-    "release": "npm version patch && pnpm run build && npm publish && git push"
+    "release": "npm version patch && pnpm run build && npm publish && git push --tags"
   },
   "author": "Emiliopg91",
   "license": "LGPL-2.1",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@electron-toolkit/eslint-config-ts": "^1.0.1",
-    "@tser-framework/commons": "latest",
+    "@tser-framework/commons": "2.0.7",
     "electron": "^28.2.0",
     "eslint": "^8.56.0",
     "eslint-plugin-react": "^7.33.2",

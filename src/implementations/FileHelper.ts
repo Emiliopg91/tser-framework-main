@@ -1,21 +1,12 @@
 import { app, shell } from "electron";
 import * as fs from "fs";
 import path from "path";
-import { OSHelper } from "./OSHelper";
 
 export class FileHelper {
   private constructor() {}
 
   public static openWithDefaulApp(path: string): void {
     shell.openPath(path);
-  }
-
-  public static getLogFolder(): string {
-    return OSHelper.getHome() + path.sep + app.name + path.sep + "logs";
-  }
-
-  public static getLogFile(): string {
-    return FileHelper.getLogFolder() + path.sep + "application.log";
   }
 
   public static getResourcesFolder(): string | null {

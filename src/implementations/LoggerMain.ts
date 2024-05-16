@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DefaulLevel, LogLevel, loggerArgsToString } from "@tser-framework/commons";
 import { FileHelper } from "./FileHelper";
+import path from 'path';
+import { OSHelper } from "./OSHelper";
+import { app } from "electron";
 
 /**
  * Represents a logging utility for frontend.
@@ -8,8 +11,8 @@ import { FileHelper } from "./FileHelper";
 export class LoggerMain {
   private constructor() {}
 
-  private static logFile = FileHelper.getLogFile();
-  private static logFolder = FileHelper.getLogFolder();
+  private static logFolder = OSHelper.getHome() + path.sep + app.name + path.sep + "logs";
+  private static logFile = LoggerMain.logFolder + path.sep + "application.log";
 
   /**
    * The current log level.
