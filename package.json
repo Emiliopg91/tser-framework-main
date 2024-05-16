@@ -1,0 +1,49 @@
+{
+  "name": "@tser-framework/main",
+  "version": "2.0.0",
+  "description": "TypeScript Electron React framework",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "sideEffects": false,
+  "scripts": {
+    "build": "shx rm -rf dist && tsc -b",
+    "dev": "tsc -b -w",
+    "docs": "typedoc --theme wiki-js --tsconfig ./tsconfig.json src/**/*",
+    "test": "echo 'No tests for now!'",
+    "release": "npm version patch && pnpm run build && npm publish && git push"
+  },
+  "author": "Emiliopg91",
+  "license": "LGPL-2.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Emiliopg91/tser-framework.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Emiliopg91/tser-framework/issues"
+  },
+  "homepage": "https://github.com/Emiliopg91/tser-framework#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
+    "@electron-toolkit/eslint-config-ts": "^1.0.1",
+    "@tser-framework/commons": "2.0.1",
+    "electron": "^28.2.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.2.4",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "react": "^18.3.1"
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "module",
+      "parser": "typescript"
+    }
+  }
+}
