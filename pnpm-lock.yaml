@@ -13,8 +13,8 @@ devDependencies:
     specifier: ^1.0.1
     version: 1.0.1(eslint@8.56.0)(typescript@5.3.3)
   '@tser-framework/commons':
-    specifier: latest
-    version: link:../tser-framework-commons
+    specifier: 2.0.9
+    version: 2.0.9
   electron:
     specifier: ^28.2.0
     version: 28.2.0
@@ -561,6 +561,12 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       defer-to-connect: 2.0.1
+    dev: true
+
+  /@tser-framework/commons@2.0.9:
+    resolution: {integrity: sha512-bXDKgKeC7XpUl0ZyX+ZP/LIoDxv41ZD6jksK6v8mIll74sNZ7NUQqoW3SXBwUx38bVYaZkyQCajRdHZqxMPKXQ==}
+    dependencies:
+      react: 18.3.1
     dev: true
 
   /@types/cacheable-request@6.0.3:
@@ -2510,7 +2516,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
