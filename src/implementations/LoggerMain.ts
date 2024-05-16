@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DefaulLevel, LogLevel, argsToString } from "@tser-framework/commons";
+import { DefaulLevel, LogLevel, loggerArgsToString } from "@tser-framework/commons";
 import { FileHelper } from "./FileHelper";
 
 /**
@@ -52,7 +52,7 @@ export class LoggerMain {
       const logEntry = `[${date}][${LogLevel[lvl].padEnd(
         6,
         " "
-      )}] (${category.padEnd(8, " ")}) - ${argsToString(...args)}`;
+      )}] (${category.padEnd(8, " ")}) - ${loggerArgsToString(...args)}`;
       FileHelper.append(LoggerMain.logFile, logEntry + "\n");
       console.log(logEntry);
     }
