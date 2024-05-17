@@ -6,6 +6,7 @@ export { TranslatorMain } from "./implementations/TranslatorMain";
 export { TrayBuilder, TrayMenuBuilder } from "./implementations/TrayHelper";
 
 export { AppConfig } from "./types/AppConfig";
+export { DeepLinkBinding } from "./types/DeepLinkBinding";
 export {
   IpcListener,
   defaultIpcListeners,
