@@ -26,6 +26,7 @@ export class LoggerMain {
     if (!FileHelper.exists(LoggerMain.logFolder)) {
       FileHelper.mkdir(LoggerMain.logFolder, true);
     }
+    console.log("Logger writing to file "+LoggerMain.logFile);
 
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
     LoggerMain.currentLevel = LogLevel[level as keyof typeof LogLevel];
