@@ -6,7 +6,11 @@ export { TranslatorMain } from "./implementations/TranslatorMain";
 export { TrayBuilder, TrayMenuBuilder } from "./implementations/TrayHelper";
 
 export { AppConfig } from "./types/AppConfig";
-export { IpcListener, defaultIpcListeners } from "./types/IpcListener";
+export {
+  IpcListener,
+  defaultIpcListeners,
+  defaultExposedApi,
+} from "./types/IpcListener";
 export {
   ProtocolBinding,
   defaultProtocolBindings,
