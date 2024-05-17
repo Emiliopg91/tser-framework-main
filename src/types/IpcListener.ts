@@ -36,7 +36,7 @@ export const defaultExposedApi = {
   log(data: LoggerRequest): void {
     ipcRenderer.send("log", data);
   },
-  translate(data: TranslationRequest): string {
-    return TranslatorMain.translate(data.key, data.replacements);
+  async translate(data: TranslationRequest): Promise<string> {
+    return ipcRenderer.invoke("translate", data);
   },
 };
