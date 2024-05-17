@@ -26,7 +26,7 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
   },
   translate: {
     type: "handle",
-    fn: async (_, param: TranslationRequest): Promise<string> => {
+    fn: (_, param: TranslationRequest): string => {
       return TranslatorMain.translate(param.key, param.replacements);
     },
   },
