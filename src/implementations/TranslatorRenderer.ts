@@ -4,7 +4,7 @@ import { LoggerMain } from "./LoggerMain";
 /**
  * The Translator class is used to translate text into different languages.
  */
-export class Translator {
+export class TranslatorRenderer {
 
     /**
      * Private constructor to prevent instantiation
@@ -33,9 +33,9 @@ export class Translator {
      * If the current language is not English and no translation is available, it falls back to English.
      */
     public static initialize(translations: Record<string, Record<string, string>>) {
-        Translator.curLang = app.getLocale();
-        LoggerMain.info("Initializing translator. Current language " + Translator.curLang);
-        Translator.dictionary = translations;
+        TranslatorRenderer.curLang = app.getLocale();
+        LoggerMain.info("Initializing translator. Current language " + TranslatorRenderer.curLang);
+        TranslatorRenderer.dictionary = translations;
     }
 
     /**
@@ -47,13 +47,13 @@ export class Translator {
     public static translate(key: string, replacements: Record<string, any> = {}) {
         let result: string = key;
 
-        if (Translator.dictionary[key] !== null && Translator.dictionary[key] !== undefined) {
-            const keyEntry = Translator.dictionary[key];
-            if (keyEntry[Translator.curLang] !== null && keyEntry[Translator.curLang] !== undefined) {
-                result = keyEntry[Translator.curLang];
+        if (TranslatorRenderer.dictionary[key] !== null && TranslatorRenderer.dictionary[key] !== undefined) {
+            const keyEntry = TranslatorRenderer.dictionary[key];
+            if (keyEntry[TranslatorRenderer.curLang] !== null && keyEntry[TranslatorRenderer.curLang] !== undefined) {
+                result = keyEntry[TranslatorRenderer.curLang];
             } else {
-                if (keyEntry[Translator.defLang] !== null && keyEntry[Translator.defLang] !== undefined) {
-                    result = keyEntry[Translator.defLang];
+                if (keyEntry[TranslatorRenderer.defLang] !== null && keyEntry[TranslatorRenderer.defLang] !== undefined) {
+                    result = keyEntry[TranslatorRenderer.defLang];
                 }
             }
             for (const key in replacements) {

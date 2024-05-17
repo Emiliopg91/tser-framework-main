@@ -1,7 +1,7 @@
 import { IpcMainInvokeEvent } from "electron";
 import { LoggerMain } from "../implementations/LoggerMain";
 import { LogLevel, LoggerRequest, TranslationRequest } from "@tser-framework/commons";
-import { Translator } from "../implementations/Translator";
+import { TranslatorRenderer } from "../implementations/TranslatorRenderer";
 
 export interface IpcListener {
   type: "handle" | "on";
@@ -19,7 +19,7 @@ export const defaultIpcListeners: Record<string, IpcListener>={
   translate: {
     type: 'handle',
     fn: async (_, param: TranslationRequest): Promise<string> => {
-      return Translator.translate(param.key, param.replacements);
+      return TranslatorRenderer.translate(param.key, param.replacements);
     }
   }
 }
