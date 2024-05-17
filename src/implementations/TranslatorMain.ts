@@ -4,7 +4,7 @@ import { LoggerMain } from "./LoggerMain";
 /**
  * The Translator class is used to translate text into different languages.
  */
-export class TranslatorRenderer {
+export class TranslatorMain {
 
     /**
      * Private constructor to prevent instantiation
@@ -33,9 +33,9 @@ export class TranslatorRenderer {
      * If the current language is not English and no translation is available, it falls back to English.
      */
     public static initialize(translations: Record<string, Record<string, string>>) {
-        TranslatorRenderer.curLang = app.getLocale();
-        LoggerMain.info("Initializing translator. Current language " + TranslatorRenderer.curLang);
-        TranslatorRenderer.dictionary = translations;
+        TranslatorMain.curLang = app.getLocale();
+        LoggerMain.info("Initializing translator. Current language " + TranslatorMain.curLang);
+        TranslatorMain.dictionary = translations;
     }
 
     /**
@@ -47,13 +47,13 @@ export class TranslatorRenderer {
     public static translate(key: string, replacements: Record<string, any> = {}) {
         let result: string = key;
 
-        if (TranslatorRenderer.dictionary[key] !== null && TranslatorRenderer.dictionary[key] !== undefined) {
-            const keyEntry = TranslatorRenderer.dictionary[key];
-            if (keyEntry[TranslatorRenderer.curLang] !== null && keyEntry[TranslatorRenderer.curLang] !== undefined) {
-                result = keyEntry[TranslatorRenderer.curLang];
+        if (TranslatorMain.dictionary[key] !== null && TranslatorMain.dictionary[key] !== undefined) {
+            const keyEntry = TranslatorMain.dictionary[key];
+            if (keyEntry[TranslatorMain.curLang] !== null && keyEntry[TranslatorMain.curLang] !== undefined) {
+                result = keyEntry[TranslatorMain.curLang];
             } else {
-                if (keyEntry[TranslatorRenderer.defLang] !== null && keyEntry[TranslatorRenderer.defLang] !== undefined) {
-                    result = keyEntry[TranslatorRenderer.defLang];
+                if (keyEntry[TranslatorMain.defLang] !== null && keyEntry[TranslatorMain.defLang] !== undefined) {
+                    result = keyEntry[TranslatorMain.defLang];
                 }
             }
             for (const key in replacements) {
