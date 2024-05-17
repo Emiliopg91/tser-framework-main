@@ -35,9 +35,6 @@ export class TranslatorMain {
     TranslatorMain.curLang = Intl.DateTimeFormat()
       .resolvedOptions()
       .locale.substring(0, 2);
-    LoggerMain.info(
-      "Initializing translator. Current language " + TranslatorMain.curLang
-    );
     TranslatorMain.dictionary = translations;
   }
 
