@@ -13,8 +13,8 @@ devDependencies:
     specifier: ^1.0.1
     version: 1.0.1(eslint@8.56.0)(typescript@5.3.3)
   '@tser-framework/commons':
-    specifier: 2.0.10
-    version: 2.0.10
+    specifier: 2.0.11
+    version: 2.0.11
   electron:
     specifier: ^28.2.0
     version: 28.2.0
@@ -563,8 +563,8 @@ packages:
       defer-to-connect: 2.0.1
     dev: true
 
-  /@tser-framework/commons@2.0.10:
-    resolution: {integrity: sha512-eF12z3JVV8X2vf0YFa7Y4FeXcs0Fdzq1wzUH6y+Wd6OHXJrDrliWa6BPFM76boXpm51tW7JGmLWyzI3jeEr7bA==}
+  /@tser-framework/commons@2.0.11:
+    resolution: {integrity: sha512-0KBYs6uwN+DAtJJbWvC9Hgn5AkYD6MnOnpadS035AhLUr8AHVakoDauTHpIKtgS+bldFapgNPGdA1QZ7hxbRKg==}
     dependencies:
       react: 18.3.1
     dev: true
