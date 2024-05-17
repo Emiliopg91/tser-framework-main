@@ -1,5 +1,3 @@
-import { LoggerMain } from "./LoggerMain";
-
 /**
  * The Translator class is used to translate text into different languages.
  */
