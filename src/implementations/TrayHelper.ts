@@ -28,7 +28,7 @@ export class TrayBuilder {
   public build(): Tray {
     try {
       const tray = new Tray(nativeImage.createFromPath(this.iconPath));
-      if (this.toolTip) tray.setToolTip(TranslatorMain.translate(this.toolTip));
+      if (this.toolTip) tray.setToolTip(this.toolTip);
 
       if (this.contextMenu) tray.setContextMenu(this.contextMenu);
 
@@ -54,7 +54,7 @@ export class TrayMenuBuilder {
     click: (() => void) | undefined = undefined
   ): TrayMenuBuilder {
     this.entries.push({
-      label: TranslatorMain.translate(label),
+      label,
       type: "normal",
       click,
     });
@@ -67,6 +67,13 @@ export class TrayMenuBuilder {
   }
 
   public build(): Menu {
+    for (let i = 0; i < this.entries.length; i++) {
+      if (this.entries[i]["label"]) {
+        this.entries[i]["label"] = TranslatorMain.translate(
+          this.entries[i]["label"] as string
+        );
+      }
+    }
     return Menu.buildFromTemplate(this.entries);
   }
 }
