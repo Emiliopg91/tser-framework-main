@@ -5,7 +5,7 @@ import { TranslatorMain } from "./TranslatorMain";
 export class TrayBuilder {
   private iconPath: string;
   private toolTip: string | null = null;
-  private contextMenu: Menu | null = null;
+  private contextMenu: TrayMenuBuilder | null = null;
 
   public static builder(iconPath: string): TrayBuilder {
     return new TrayBuilder(iconPath);
@@ -20,7 +20,7 @@ export class TrayBuilder {
     return this;
   }
 
-  public withContextMenu(menu: Menu): TrayBuilder {
+  public withContextMenu(menu: TrayMenuBuilder): TrayBuilder {
     this.contextMenu = menu;
     return this;
   }
@@ -30,7 +30,7 @@ export class TrayBuilder {
       const tray = new Tray(nativeImage.createFromPath(this.iconPath));
       if (this.toolTip) tray.setToolTip(this.toolTip);
 
-      if (this.contextMenu) tray.setContextMenu(this.contextMenu);
+      if (this.contextMenu) tray.setContextMenu(this.contextMenu.build());
 
       return tray;
     } catch (error) {
