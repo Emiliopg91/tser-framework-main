@@ -7,11 +7,8 @@ export { TrayBuilder, TrayMenuBuilder } from "./implementations/TrayHelper";
 
 export { AppConfig } from "./types/AppConfig";
 export { DeepLinkBinding } from "./types/DeepLinkBinding";
-export {
-  IpcListener,
-  defaultIpcListeners,
-  defaultExposedApi,
-} from "./types/IpcListener";
+export { defaultExposed } from "./types/Exposed";
+export { IpcListener, defaultIpcListeners } from "./types/IpcListener";
 export {
   ProtocolBinding,
   defaultProtocolBindings,

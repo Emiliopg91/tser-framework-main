@@ -1,4 +1,4 @@
-import { IpcMainInvokeEvent, ipcRenderer } from "electron";
+import { IpcMainInvokeEvent } from "electron";
 import { LoggerMain } from "../implementations/LoggerMain";
 import {
   LogLevel,
@@ -29,14 +29,5 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
     fn: (_, param: TranslationRequest): string => {
       return TranslatorMain.translate(param.key, param.replacements);
     },
-  },
-};
-
-export const defaultExposedApi = {
-  log(data: LoggerRequest): void {
-    ipcRenderer.send("log", data);
-  },
-  async translate(data: TranslationRequest): Promise<string> {
-    return ipcRenderer.invoke("translate", data);
   },
 };
