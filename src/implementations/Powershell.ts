@@ -1,43 +1,50 @@
 import { spawn } from "child_process";
 
+interface Entry {
+  cmd: string;
+  resolve: (data: string) => void;
+}
+
 export class Powershell {
   private static PROCESS = spawn("powershell");
-  private static COMMANDS: Array<string> = [];
-  private static RESOLVERS: Array<(data: string) => void> = [];
-  private static IS_RUNNING: boolean = false;
   private static ACTUAL_OUTPUT: boolean = false;
+  private static ENTRIES: Array<Entry> = [];
+  private static CURRENT: Entry | undefined = undefined;
 
-  public static initialize() {
-    Powershell.PROCESS.stdout.on("data", function (data: string) {
-      const lines = data.toString().split("\n");
-      if (lines[lines.length - 1].trim() == "") {
-        lines.pop();
-      }
-      if (lines[lines.length - 1].startsWith("PS ")) {
-        if (Powershell.ACTUAL_OUTPUT && Powershell.RESOLVERS.length > 0) {
+  public static async initialize(): Promise<void> {
+    const promise: Promise<void> = new Promise<void>((resolve) => {
+      Powershell.PROCESS.stdout.on("data", function (data: string) {
+        const lines = data.toString().split("\n");
+        if (lines[lines.length - 1].trim() == "") {
           lines.pop();
-          Powershell.RESOLVERS[0](lines.join("\n"));
-          Powershell.RESOLVERS.shift();
-          Powershell.IS_RUNNING = false;
-        } else {
-          Powershell.ACTUAL_OUTPUT = true;
         }
-      }
+        if (lines[lines.length - 1].startsWith("PS ")) {
+          if (Powershell.ACTUAL_OUTPUT && Powershell.CURRENT) {
+            lines.pop();
+            Powershell.CURRENT?.resolve(lines.join("\n"));
+            Powershell.CURRENT = undefined;
+          } else {
+            Powershell.ACTUAL_OUTPUT = true;
+            if (!Powershell.ACTUAL_OUTPUT) {
+              resolve();
+            }
+          }
+        }
+      });
+      return promise;
     });
 
     setInterval(() => {
-      if (!Powershell.IS_RUNNING && Powershell.COMMANDS.length > 0) {
-        Powershell.IS_RUNNING = true;
-        Powershell.PROCESS.stdin.write(Powershell.COMMANDS[0] + "\n");
-        Powershell.COMMANDS.shift();
+      if (!Powershell.CURRENT && Powershell.ENTRIES.length > 0) {
+        Powershell.CURRENT = Powershell.ENTRIES.shift();
+        Powershell.PROCESS.stdin.write(Powershell.CURRENT?.cmd + "\n");
       }
     }, 100);
   }
 
   public static async runCommand(cmd: string): Promise<string> {
     const promise = new Promise<string>((resolve) => {
-      Powershell.RESOLVERS.push(resolve);
-      Powershell.COMMANDS.push(cmd);
+      Powershell.ENTRIES.push({ cmd, resolve });
     });
     return promise;
   }
