@@ -1,5 +1,4 @@
 import { spawn } from "child_process";
-import { Mutex } from "async-mutex";
 
 export class Powershell {
   private static PROCESS = spawn("powershell");
