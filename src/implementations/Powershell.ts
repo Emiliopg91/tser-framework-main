@@ -16,6 +16,7 @@ export class Powershell {
     const promise: Promise<void> = new Promise<void>((resolve) => {
       Powershell.PROCESS.stdout.on("data", function (data: string) {
         const lines = data.toString().split("\n");
+        LoggerMain.system("Leidos datos: " + data.toString());
         if (lines[lines.length - 1].trim() == "") {
           lines.pop();
         }
