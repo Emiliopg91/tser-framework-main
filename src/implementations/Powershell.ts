@@ -22,7 +22,9 @@ export class Powershell {
         if (lines[lines.length - 1].startsWith("PS ")) {
           if (Powershell.READY && Powershell.CURRENT) {
             lines.pop();
-            Powershell.CURRENT?.resolve(lines.join("\n"));
+            const content = lines.join("\n");
+            LoggerMain.system("Respuesta al comando " + content);
+            Powershell.CURRENT?.resolve(content);
             Powershell.CURRENT = undefined;
           } else {
             if (!Powershell.READY) {
@@ -42,6 +44,7 @@ export class Powershell {
         Powershell.ENTRIES.length > 0
       ) {
         Powershell.CURRENT = Powershell.ENTRIES.shift();
+        LoggerMain.system("Aceptando comando " + Powershell.CURRENT?.cmd);
         Powershell.PROCESS.stdin.write(Powershell.CURRENT?.cmd + "\n");
       }
     }, 100);
