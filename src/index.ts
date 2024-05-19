@@ -1,6 +1,7 @@
 export { FileHelper } from "./implementations/FileHelper";
 export { LoggerMain } from "./implementations/LoggerMain";
 export { OSHelper } from "./implementations/OSHelper";
+export { Powershell } from "./implementations/Powershell";
 export { Toaster } from "./implementations/Toaster";
 export { TranslatorMain } from "./implementations/TranslatorMain";
 export { TrayBuilder, TrayMenuBuilder } from "./implementations/TrayHelper";

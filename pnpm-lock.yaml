@@ -15,6 +15,9 @@ devDependencies:
   '@tser-framework/commons':
     specifier: 2.0.11
     version: 2.0.11
+  async-mutex:
+    specifier: ^0.5.0
+    version: 0.5.0
   electron:
     specifier: ^28.2.0
     version: 28.2.0
@@ -884,6 +887,12 @@ packages:
       get-intrinsic: 1.2.4
       is-array-buffer: 3.0.4
       is-shared-array-buffer: 1.0.3
+    dev: true
+
+  /async-mutex@0.5.0:
+    resolution: {integrity: sha512-1A94B18jkJ3DYq284ohPxoXbfTA5HsQ7/Mf4DEhcyLx3Bz27Rh59iScbB6EPiP+B+joue6YCxcMXSbFC1tZKwA==}
+    dependencies:
+      tslib: 2.6.2
     dev: true
 
   /available-typed-arrays@1.0.7:
