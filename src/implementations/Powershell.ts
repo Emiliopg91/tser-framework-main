@@ -6,6 +6,7 @@ export class Powershell {
   private static COMMANDS: Array<string> = [];
   private static RESOLVERS: Array<(data: string) => void> = [];
   private static IS_RUNNING: boolean = false;
+  private static ACTUAL_OUTPUT: boolean = false;
 
   public static initialize() {
     Powershell.PROCESS.stderr.on("data", function (data: string) {
@@ -17,10 +18,13 @@ export class Powershell {
         lines.pop();
       }
       if (lines[lines.length - 1].startsWith("PS ")) {
-        if (Powershell.RESOLVERS.length > 0) {
+        if (Powershell.ACTUAL_OUTPUT && Powershell.RESOLVERS.length > 0) {
           Powershell.RESOLVERS[0](Powershell.OUTPUT);
           Powershell.RESOLVERS.shift();
           Powershell.IS_RUNNING = false;
+          Powershell.OUTPUT = "";
+        } else {
+          Powershell.ACTUAL_OUTPUT = true;
           Powershell.OUTPUT = "";
         }
       } else {
