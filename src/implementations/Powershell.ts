@@ -15,7 +15,8 @@ export class Powershell {
       }
       if (lines[lines.length - 1].startsWith("PS ")) {
         if (Powershell.ACTUAL_OUTPUT && Powershell.RESOLVERS.length > 0) {
-          Powershell.RESOLVERS[0](data);
+          lines.pop();
+          Powershell.RESOLVERS[0](lines.join("\n"));
           Powershell.RESOLVERS.shift();
           Powershell.IS_RUNNING = false;
         } else {
