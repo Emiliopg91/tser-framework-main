@@ -12,7 +12,8 @@ export class Powershell {
       Powershell.OUTPUT += data;
     });
     Powershell.PROCESS.stdout.on("data", function (data: string) {
-      if (data.toString().startsWith("PS ")) {
+      const lines = data.toString().split("\n");
+      if (lines[lines.length - 1].startsWith("PS ")) {
         if (Powershell.RESOLVERS.length > 0) {
           Powershell.RESOLVERS[0](Powershell.OUTPUT);
           Powershell.RESOLVERS.shift();
