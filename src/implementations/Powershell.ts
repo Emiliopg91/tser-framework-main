@@ -1,4 +1,5 @@
 import { spawn } from "child_process";
+import { LoggerMain } from "./LoggerMain";
 
 interface Entry {
   cmd: string;
@@ -7,7 +8,7 @@ interface Entry {
 
 export class Powershell {
   private static PROCESS = spawn("powershell");
-  private static ACTUAL_OUTPUT: boolean = false;
+  private static READY: boolean = false;
   private static ENTRIES: Array<Entry> = [];
   private static CURRENT: Entry | undefined = undefined;
 
@@ -19,27 +20,29 @@ export class Powershell {
           lines.pop();
         }
         if (lines[lines.length - 1].startsWith("PS ")) {
-          if (Powershell.ACTUAL_OUTPUT && Powershell.CURRENT) {
+          if (Powershell.READY && Powershell.CURRENT) {
             lines.pop();
             Powershell.CURRENT?.resolve(lines.join("\n"));
             Powershell.CURRENT = undefined;
           } else {
-            Powershell.ACTUAL_OUTPUT = true;
-            if (!Powershell.ACTUAL_OUTPUT) {
+            Powershell.READY = true;
+            if (!Powershell.READY) {
               resolve();
+              LoggerMain.system("Powershell ready")
             }
           }
         }
       });
-      return promise;
     });
 
     setInterval(() => {
-      if (!Powershell.CURRENT && Powershell.ENTRIES.length > 0) {
+      if (Powershell.READY && !Powershell.CURRENT && Powershell.ENTRIES.length > 0) {
         Powershell.CURRENT = Powershell.ENTRIES.shift();
         Powershell.PROCESS.stdin.write(Powershell.CURRENT?.cmd + "\n");
       }
     }, 100);
+    
+    return promise;
   }
 
   public static async runCommand(cmd: string): Promise<string> {
