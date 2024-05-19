@@ -29,14 +29,35 @@ export class Powershell {
             lines.pop();
           }
           if (Powershell.CURRENT) {
-            if (lines[lines.length - 1].startsWith("PS ")) {
-              lines.pop();
-              Powershell.OUTPUT += lines.join("\n");
-              Powershell.CURRENT?.resolve(Powershell.OUTPUT);
-              Powershell.OUTPUT = "";
-              Powershell.CURRENT = undefined;
-            } else {
-              Powershell.OUTPUT += lines.join("\n");
+            if (lines.length > 0) {
+              if (
+                Powershell.OUTPUT == "" &&
+                lines[0].trim() == Powershell.CURRENT.cmd
+              ) {
+                lines.shift();
+              }
+              if (lines.length > 0) {
+                if (lines[lines.length - 1].startsWith("PS ")) {
+                  lines.pop();
+                  Powershell.OUTPUT += lines.join("\n");
+                  const outLines = Powershell.OUTPUT.split("\n");
+                  while (outLines.length > 0 && outLines[0].trim() == "") {
+                    outLines.shift();
+                  }
+                  while (
+                    outLines.length > 0 &&
+                    outLines[outLines.length - 1].trim() == ""
+                  ) {
+                    outLines.pop();
+                  }
+
+                  Powershell.CURRENT?.resolve(Powershell.OUTPUT);
+                  Powershell.OUTPUT = "";
+                  Powershell.CURRENT = undefined;
+                } else {
+                  Powershell.OUTPUT += lines.join("\n");
+                }
+              }
             }
           }
         }
@@ -57,9 +78,13 @@ export class Powershell {
     return promise;
   }
 
-  public static async runCommand(cmd: string): Promise<string> {
+  public static async runCommand(cmd: string, ...args: any): Promise<string> {
     const promise = new Promise<string>((resolve) => {
-      Powershell.ENTRIES.push({ cmd, resolve });
+      let command = cmd;
+      if (args) {
+        command = command + " " + args.join(" ");
+      }
+      Powershell.ENTRIES.push({ cmd: command, resolve });
     });
     return promise;
   }
