@@ -14,13 +14,15 @@ export class Powershell {
       Powershell.OUTPUT += data;
     });
     Powershell.PROCESS.stdout.on("data", function (data: string) {
-      if (data.startsWith("PS ")) {
-        Powershell.RESOLVERS[0](Powershell.OUTPUT);
-        Powershell.MUTEX.runExclusive(() => {
-          Powershell.RESOLVERS.shift();
-          Powershell.IS_RUNNING = false;
-          Powershell.OUTPUT = "";
-        });
+      if (data.toString().startsWith("PS ")) {
+        if (Powershell.RESOLVERS.length > 0) {
+          Powershell.RESOLVERS[0](Powershell.OUTPUT);
+          Powershell.MUTEX.runExclusive(() => {
+            Powershell.RESOLVERS.shift();
+            Powershell.IS_RUNNING = false;
+            Powershell.OUTPUT = "";
+          });
+        }
       } else {
         Powershell.OUTPUT += data;
       }
