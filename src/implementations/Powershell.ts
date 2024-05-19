@@ -11,28 +11,35 @@ export class Powershell {
   private static READY: boolean = false;
   private static ENTRIES: Array<Entry> = [];
   private static CURRENT: Entry | undefined = undefined;
+  private static OUTPUT: string = "";
 
   public static async initialize(): Promise<void> {
     const promise: Promise<void> = new Promise<void>((resolve) => {
       Powershell.PROCESS.stdout.on("data", function (data: string) {
         const lines = data.toString().split("\n");
         LoggerMain.system("Leidos datos: " + data.toString());
-        if (lines[lines.length - 1].trim() == "") {
-          lines.pop();
-        }
-        if (lines[lines.length - 1].startsWith("PS ")) {
-          if (Powershell.READY && Powershell.CURRENT) {
-            lines.pop();
-            const content = lines.join("\n");
-            LoggerMain.system("Respuesta al comando " + content);
-            Powershell.CURRENT?.resolve(content);
-            Powershell.CURRENT = undefined;
-          } else {
-            if (!Powershell.READY) {
-              resolve();
-              LoggerMain.system("Powershell ready");
-            }
+
+        if (!Powershell.READY) {
+          if (lines[lines.length - 1].startsWith("PS ")) {
+            LoggerMain.system("Powershell ready");
             Powershell.READY = true;
+            resolve();
+          }
+        } else {
+          if (lines[lines.length - 1].trim() == "") {
+            lines.pop();
+          }
+          if (Powershell.CURRENT) {
+            if (lines[lines.length - 1].startsWith("PS ")) {
+              lines.pop();
+              Powershell.OUTPUT += lines.join("\n");
+              LoggerMain.system("Respuesta al comando " + Powershell.OUTPUT);
+              Powershell.CURRENT?.resolve(Powershell.OUTPUT);
+              Powershell.OUTPUT = "";
+              Powershell.CURRENT = undefined;
+            } else {
+              Powershell.OUTPUT += lines.join("\n");
+            }
           }
         }
       });
