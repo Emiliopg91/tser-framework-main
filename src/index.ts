@@ -4,7 +4,7 @@ export { OSHelper } from "./implementations/OSHelper";
 export { Powershell } from "./implementations/Powershell";
 export { Toaster } from "./implementations/Toaster";
 export { TranslatorMain } from "./implementations/TranslatorMain";
-export { TrayBuilder, TrayMenuBuilder } from "./implementations/TrayHelper";
+export { TrayBuilder } from "./implementations/TrayHelper";
 
 export { AppConfig } from "./types/AppConfig";
 export { DeepLinkBinding } from "./types/DeepLinkBinding";
