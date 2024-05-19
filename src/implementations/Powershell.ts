@@ -17,7 +17,6 @@ export class Powershell {
     const promise: Promise<void> = new Promise<void>((resolve) => {
       Powershell.PROCESS.stdout.on("data", function (data: string) {
         const lines = data.toString().split("\n");
-        LoggerMain.system("Leidos datos: " + data.toString());
 
         if (!Powershell.READY) {
           if (lines[lines.length - 1].startsWith("PS ")) {
@@ -33,7 +32,6 @@ export class Powershell {
             if (lines[lines.length - 1].startsWith("PS ")) {
               lines.pop();
               Powershell.OUTPUT += lines.join("\n");
-              LoggerMain.system("Respuesta al comando " + Powershell.OUTPUT);
               Powershell.CURRENT?.resolve(Powershell.OUTPUT);
               Powershell.OUTPUT = "";
               Powershell.CURRENT = undefined;
@@ -52,7 +50,6 @@ export class Powershell {
         Powershell.ENTRIES.length > 0
       ) {
         Powershell.CURRENT = Powershell.ENTRIES.shift();
-        LoggerMain.system("Aceptando comando " + Powershell.CURRENT?.cmd);
         Powershell.PROCESS.stdin.write(Powershell.CURRENT?.cmd + "\n");
       }
     }, 100);
