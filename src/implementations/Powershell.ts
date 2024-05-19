@@ -25,11 +25,11 @@ export class Powershell {
             Powershell.CURRENT?.resolve(lines.join("\n"));
             Powershell.CURRENT = undefined;
           } else {
-            Powershell.READY = true;
             if (!Powershell.READY) {
               resolve();
               LoggerMain.system("Powershell ready");
             }
+            Powershell.READY = true;
           }
         }
         Powershell.PROCESS.stdin.write(" ");
