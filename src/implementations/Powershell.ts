@@ -51,7 +51,7 @@ export class Powershell {
                     outLines.pop();
                   }
 
-                  Powershell.CURRENT?.resolve(Powershell.OUTPUT);
+                  Powershell.CURRENT?.resolve(outLines.join("\n"));
                   Powershell.OUTPUT = "";
                   Powershell.CURRENT = undefined;
                 } else {
@@ -84,7 +84,7 @@ export class Powershell {
       if (args) {
         command = command + " " + args.join(" ");
       }
-      Powershell.ENTRIES.push({ cmd: command, resolve });
+      Powershell.ENTRIES.push({ cmd: command.trim(), resolve });
     });
     return promise;
   }
