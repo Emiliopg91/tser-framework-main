@@ -28,20 +28,25 @@ export class Powershell {
             Powershell.READY = true;
             if (!Powershell.READY) {
               resolve();
-              LoggerMain.system("Powershell ready")
+              LoggerMain.system("Powershell ready");
             }
           }
         }
+        Powershell.PROCESS.stdin.write(" ");
       });
     });
 
     setInterval(() => {
-      if (Powershell.READY && !Powershell.CURRENT && Powershell.ENTRIES.length > 0) {
+      if (
+        Powershell.READY &&
+        !Powershell.CURRENT &&
+        Powershell.ENTRIES.length > 0
+      ) {
         Powershell.CURRENT = Powershell.ENTRIES.shift();
         Powershell.PROCESS.stdin.write(Powershell.CURRENT?.cmd + "\n");
       }
     }, 100);
-    
+
     return promise;
   }
 
