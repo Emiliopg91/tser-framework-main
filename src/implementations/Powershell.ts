@@ -6,7 +6,6 @@ export class Powershell {
   private static OUTPUT = "";
   private static COMMANDS: Array<string> = [];
   private static RESOLVERS: Array<(data: string) => void> = [];
-  private static MUTEX: Mutex = new Mutex();
   private static IS_RUNNING: boolean = false;
 
   public static initialize() {
@@ -17,11 +16,9 @@ export class Powershell {
       if (data.toString().startsWith("PS ")) {
         if (Powershell.RESOLVERS.length > 0) {
           Powershell.RESOLVERS[0](Powershell.OUTPUT);
-          Powershell.MUTEX.runExclusive(() => {
-            Powershell.RESOLVERS.shift();
-            Powershell.IS_RUNNING = false;
-            Powershell.OUTPUT = "";
-          });
+          Powershell.RESOLVERS.shift();
+          Powershell.IS_RUNNING = false;
+          Powershell.OUTPUT = "";
         }
       } else {
         Powershell.OUTPUT += data;
@@ -30,22 +27,18 @@ export class Powershell {
 
     setInterval(() => {
       if (!Powershell.IS_RUNNING && Powershell.COMMANDS.length > 0) {
-        Powershell.MUTEX.runExclusive(() => {
-          Powershell.IS_RUNNING = true;
-          Powershell.PROCESS.stdin.write(Powershell.COMMANDS[0] + "\n");
-          Powershell.COMMANDS.shift();
-        });
+        Powershell.IS_RUNNING = true;
+        Powershell.PROCESS.stdin.write(Powershell.COMMANDS[0] + "\n");
+        Powershell.COMMANDS.shift();
       }
     }, 100);
   }
 
   public static async runCommand(cmd: string): Promise<string> {
-    return await Powershell.MUTEX.runExclusive<Promise<string>>(() => {
-      const promise = new Promise<string>((resolve) => {
-        Powershell.RESOLVERS.push(resolve);
-        Powershell.COMMANDS.push(cmd);
-      });
-      return promise;
+    const promise = new Promise<string>((resolve) => {
+      Powershell.RESOLVERS.push(resolve);
+      Powershell.COMMANDS.push(cmd);
     });
+    return promise;
   }
 }
