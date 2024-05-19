@@ -32,7 +32,6 @@ export class Powershell {
             Powershell.READY = true;
           }
         }
-        Powershell.PROCESS.stdin.write(" ");
       });
     });
 
