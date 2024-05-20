@@ -1,7 +1,6 @@
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
-  app,
   shell,
 } from "electron";
 import { is } from "@electron-toolkit/utils";
