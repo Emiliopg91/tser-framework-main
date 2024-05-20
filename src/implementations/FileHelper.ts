@@ -43,4 +43,21 @@ export class FileHelper {
   public static asarPathToAbsolute(filePath: string): string {
     return filePath.replace(".asar" + path.sep, ".asar.unpacked" + path.sep);
   }
+
+  public static findFile(fileName: string, dir: string): Array<string> {
+    const result: Array<string> = [];
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const filePath = path.join(dir, file);
+      const fileStat = fs.statSync(filePath);
+      if (fileStat.isDirectory()) {
+        FileHelper.findFile(fileName, filePath).forEach((f) => {
+          result.push(f);
+        });
+      } else if (file.endsWith(fileName)) {
+        result.push(file);
+      }
+    }
+    return result;
+  }
 }
