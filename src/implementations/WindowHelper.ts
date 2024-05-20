@@ -20,7 +20,7 @@ export class WindowHelper {
       autoHideMenuBar: hideMenu,
       ...(process.platform === "linux" ? { icon } : {}),
       webPreferences: {
-        preload: join(__dirname, preload),
+        preload: preload,
         sandbox: false,
       },
     });
