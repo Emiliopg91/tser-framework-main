@@ -5,23 +5,72 @@ import { WindowConfig } from "../types/WindowConfig";
 import { LoggerMain } from "./LoggerMain";
 
 export class WindowHelper {
-  public static async createMainWindow(
-    windowConfig: WindowConfig
-  ): Promise<void> {
-    // Create the browser window.
-    const icon = windowConfig.icon;
-    const mainWindow = new BrowserWindow({
+  public static createWindow(
+    title: string,
+    preload: string,
+    icon: string,
+    minimizeToTray: boolean = false,
+    hideMenu: boolean = false
+  ): BrowserWindow {
+    const window = new BrowserWindow({
       width: 900,
       height: 670,
       show: false,
-      title: app.getName(),
-      autoHideMenuBar: windowConfig.hideMenu,
+      title: title,
+      autoHideMenuBar: hideMenu,
       ...(process.platform === "linux" ? { icon } : {}),
       webPreferences: {
-        preload: join(__dirname, "../preload/index.js"),
+        preload: join(__dirname, preload),
         sandbox: false,
       },
     });
+
+    window.on("ready-to-show", () => {
+      window?.show();
+      window?.maximize();
+      if (is.dev) {
+        window?.webContents.openDevTools();
+      }
+      LoggerMain.system("---------------- Started renderer ----------------");
+    });
+
+    window.webContents.setWindowOpenHandler((details) => {
+      shell.openExternal(details.url);
+      return { action: "deny" };
+    });
+
+    if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
+      window.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+    } else {
+      window.loadFile(join(__dirname, "../renderer/index.html"));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.on("minimize", function (event: any) {
+      if (minimizeToTray) {
+        event.preventDefault();
+        window?.hide();
+      }
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.on("closed", () => {
+      LoggerMain.system("---------------- Stopped renderer ----------------");
+    });
+
+    return window;
+  }
+
+  public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
+    // Create the browser window.
+    const icon = windowConfig.icon;
+    const mainWindow = this.createWindow(
+      app.getName(),
+      join(__dirname, "../preload/index.js"),
+      windowConfig.icon,
+      windowConfig.minimizeToTray,
+      windowConfig.hideMenu
+    );
 
     mainWindow.on("ready-to-show", () => {
       mainWindow?.show();
@@ -55,6 +104,8 @@ export class WindowHelper {
     mainWindow.on("closed", () => {
       LoggerMain.system("---------------- Stopped renderer ----------------");
     });
+
+    return mainWindow;
   }
 
   public static createSplashWindow(lifeTime: number): Promise<void> {
