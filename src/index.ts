@@ -5,6 +5,7 @@ export { Powershell } from "./implementations/Powershell";
 export { Toaster } from "./implementations/Toaster";
 export { TranslatorMain } from "./implementations/TranslatorMain";
 export { TrayBuilder } from "./implementations/TrayHelper";
+export { WindowHelper } from "./implementations/WindowHelper";
 
 export { AppConfig } from "./types/AppConfig";
 export { DeepLinkBinding } from "./types/DeepLinkBinding";

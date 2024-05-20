@@ -4,4 +4,5 @@ export interface WindowConfig {
   closeToTray: boolean;
   escCloseWindow: boolean;
   zoom: boolean;
+  icon: string;
 }

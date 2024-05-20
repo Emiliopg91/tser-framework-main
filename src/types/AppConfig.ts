@@ -1,4 +1,4 @@
 export interface AppConfig {
   singleInstance: boolean;
-  splashScreen: boolean;
+  splashScreen: number;
 }
