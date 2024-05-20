@@ -7,7 +7,7 @@ interface Entry {
 }
 
 export class Powershell {
-  private static PROCESS = spawn("powershell");
+  private static PROCESS: any | undefined = null;
   private static READY: boolean = false;
   private static ENTRIES: Array<Entry> = [];
   private static CURRENT: Entry | undefined = undefined;
@@ -15,6 +15,7 @@ export class Powershell {
 
   public static async initialize(): Promise<void> {
     const promise: Promise<void> = new Promise<void>((resolve) => {
+      Powershell.PROCESS = spawn("powershell");
       Powershell.PROCESS.stdout.on("data", function (data: string) {
         const lines = data.toString().split("\n");
 
