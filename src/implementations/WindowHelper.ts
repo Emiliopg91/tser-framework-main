@@ -92,7 +92,7 @@ export class WindowHelper {
       const interval = setInterval(() => {
         if (opacity <= 0) {
           resolve();
-          window.clearInterval(interval);
+          clearInterval(interval);
         }
 
         browserWindowToFadeOut.setOpacity(opacity);
