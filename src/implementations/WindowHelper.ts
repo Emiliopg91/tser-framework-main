@@ -1,4 +1,9 @@
-import { BrowserWindow, app, shell } from "electron";
+import {
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+  app,
+  shell,
+} from "electron";
 import { is } from "@electron-toolkit/utils";
 import { join } from "path";
 import { WindowConfig } from "../types/WindowConfig";
@@ -6,33 +11,10 @@ import { LoggerMain } from "./LoggerMain";
 
 export class WindowHelper {
   public static createWindow(
-    title: string,
-    preload: string,
-    icon: string,
-    minimizeToTray: boolean = false,
-    hideMenu: boolean = false
+    file: string,
+    windowConstructorOption: BrowserWindowConstructorOptions
   ): BrowserWindow {
-    const window = new BrowserWindow({
-      width: 900,
-      height: 670,
-      show: false,
-      title: title,
-      autoHideMenuBar: hideMenu,
-      ...(process.platform === "linux" ? { icon } : {}),
-      webPreferences: {
-        preload: preload,
-        sandbox: false,
-      },
-    });
-
-    window.on("ready-to-show", () => {
-      window?.show();
-      window?.maximize();
-      if (is.dev) {
-        window?.webContents.openDevTools();
-      }
-      LoggerMain.system("---------------- Started renderer ----------------");
-    });
+    const window = new BrowserWindow(windowConstructorOption);
 
     window.webContents.setWindowOpenHandler((details) => {
       shell.openExternal(details.url);
@@ -40,36 +22,24 @@ export class WindowHelper {
     });
 
     if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-      window.loadURL(process.env["ELECTRON_RENDERER_URL"]);
+      window.loadURL(process.env["ELECTRON_RENDERER_URL"] + "/" + file);
     } else {
-      window.loadFile(join(__dirname, "../renderer/index.html"));
+      window.loadFile(join(__dirname, "../renderer/" + file));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    window.on("minimize", function (event: any) {
-      if (minimizeToTray) {
-        event.preventDefault();
-        window?.hide();
-      }
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    window.on("closed", () => {
-      LoggerMain.system("---------------- Stopped renderer ----------------");
+    window.webContents.setWindowOpenHandler((details) => {
+      shell.openExternal(details.url);
+      return { action: "deny" };
     });
 
     return window;
   }
 
-  public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
-    // Create the browser window.
-    const mainWindow = this.createWindow(
-      app.getName(),
-      join(__dirname, "../preload/index.js"),
-      windowConfig.icon,
-      windowConfig.minimizeToTray,
-      windowConfig.hideMenu
-    );
+  public static createMainWindow(
+    windowConstructorOption: BrowserWindowConstructorOptions,
+    windowConfig: WindowConfig
+  ): BrowserWindow {
+    const mainWindow = this.createWindow("index.html", windowConstructorOption);
 
     mainWindow.on("ready-to-show", () => {
       mainWindow?.show();
@@ -79,17 +49,6 @@ export class WindowHelper {
       }
       LoggerMain.system("---------------- Started renderer ----------------");
     });
-
-    mainWindow.webContents.setWindowOpenHandler((details) => {
-      shell.openExternal(details.url);
-      return { action: "deny" };
-    });
-
-    if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-      mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
-    } else {
-      mainWindow.loadFile(join(__dirname, "../renderer/index.html"));
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mainWindow.on("minimize", function (event: any) {
@@ -107,25 +66,17 @@ export class WindowHelper {
     return mainWindow;
   }
 
-  public static createSplashWindow(lifeTime: number): Promise<void> {
+  public static createSplashScreen(
+    windowConstructorOption: BrowserWindowConstructorOptions,
+    lifeTime: number
+  ): Promise<void> {
     return new Promise<void>((resolve) => {
-      const splash = new BrowserWindow({
-        width: 500,
-        height: 300,
-        transparent: true,
-        frame: false,
-        alwaysOnTop: true,
-      });
-      if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-        splash.loadURL(process.env["ELECTRON_RENDERER_URL"] + "/splash.html");
-      } else {
-        splash.loadFile(join(__dirname, "../renderer/splash.html"));
-      }
+      const splash = this.createWindow("splash.html", windowConstructorOption);
       splash.show();
       splash.center();
 
       setTimeout(async () => {
-        await this.fadeWindowOut(splash);
+        await this.fadeWindowOut(splash, 0.1, 10);
         splash.close();
         resolve();
       }, lifeTime);
@@ -134,8 +85,8 @@ export class WindowHelper {
 
   public static fadeWindowOut(
     browserWindowToFadeOut: BrowserWindow,
-    step = 0.1,
-    fadeEveryXSeconds = 10
+    step: number,
+    ms: number
   ): Promise<void> {
     return new Promise<void>((resolve) => {
       let opacity = browserWindowToFadeOut.getOpacity();
@@ -147,7 +98,7 @@ export class WindowHelper {
 
         browserWindowToFadeOut.setOpacity(opacity);
         opacity -= step;
-      }, fadeEveryXSeconds);
+      }, ms);
     });
   }
 }
