@@ -63,7 +63,6 @@ export class WindowHelper {
 
   public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
     // Create the browser window.
-    const icon = windowConfig.icon;
     const mainWindow = this.createWindow(
       app.getName(),
       join(__dirname, "../preload/index.js"),
