@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DefaulLevel, LogLevel, loggerArgsToString } from "@tser-framework/commons";
+import {
+  DefaulLevel,
+  LogLevel,
+  loggerArgsToString,
+} from "@tser-framework/commons";
 import { FileHelper } from "./FileHelper";
-import path from 'path';
+import path from "path";
 import { OSHelper } from "./OSHelper";
 import { app } from "electron";
 
@@ -11,7 +15,16 @@ import { app } from "electron";
 export class LoggerMain {
   private constructor() {}
 
-  private static logFolder = OSHelper.getHome() + path.sep + app.name + path.sep + "logs";
+  private static logFolder =
+    OSHelper.getHome() + path.sep + app.name + path.sep + "logs";
+  private static oldFolder =
+    OSHelper.getHome() +
+    path.sep +
+    app.name +
+    path.sep +
+    "logs" +
+    path.sep +
+    "old";
   public static logFile = LoggerMain.logFolder + path.sep + "application.log";
 
   /**
@@ -26,7 +39,11 @@ export class LoggerMain {
     if (!FileHelper.exists(LoggerMain.logFolder)) {
       FileHelper.mkdir(LoggerMain.logFolder, true);
     }
-    console.log("Logger writing to file "+LoggerMain.logFile);
+    if (!FileHelper.exists(LoggerMain.oldFolder)) {
+      FileHelper.mkdir(LoggerMain.oldFolder, true);
+    }
+
+    console.log("Logger writing to file " + LoggerMain.logFile);
 
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
     LoggerMain.currentLevel = LogLevel[level as keyof typeof LogLevel];
@@ -42,6 +59,7 @@ export class LoggerMain {
     category: string,
     ...args: any
   ): Promise<void> {
+    LoggerMain.archiveLogFile();
     if (LoggerMain.isLevelEnabled(lvl)) {
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, "0");
@@ -59,6 +77,27 @@ export class LoggerMain {
       )}] (${category.padEnd(8, " ")}) - ${loggerArgsToString(...args)}`;
       FileHelper.append(LoggerMain.logFile, logEntry + "\n");
       console.log(logEntry);
+    }
+  }
+
+  private static archiveLogFile(): void {
+    const fileDate = new Date(FileHelper.getLastModified(LoggerMain.logFile));
+    let now = new Date();
+
+    if (fileDate.getDate() != now.getDate()) {
+      FileHelper.zipFiles(
+        LoggerMain.oldFolder +
+          "application-" +
+          fileDate.getFullYear() +
+          "-" +
+          (fileDate.getMonth() + 1) +
+          "-" +
+          fileDate.getDate()
+      ).then((res) => {
+        if (res) {
+          FileHelper.delete(LoggerMain.logFile);
+        }
+      });
     }
   }
 

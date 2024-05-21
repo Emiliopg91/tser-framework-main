@@ -1,6 +1,7 @@
 import { app, shell } from "electron";
 import * as fs from "fs";
 import path from "path";
+import archiver from "archiver";
 
 export class FileHelper {
   private constructor() {}
@@ -40,6 +41,10 @@ export class FileHelper {
     fs.appendFileSync(path, data);
   }
 
+  public static delete(path: string): void {
+    fs.rmSync(path);
+  }
+
   public static asarPathToAbsolute(filePath: string): string {
     return filePath.replace(".asar" + path.sep, ".asar.unpacked" + path.sep);
   }
@@ -59,5 +64,51 @@ export class FileHelper {
       }
     }
     return result;
+  }
+
+  public static getLastModified(path: string): number {
+    return fs.statSync(path).mtimeMs;
+  }
+
+  public static zipFiles(
+    file: string,
+    ...args: Array<string>
+  ): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      const output = fs.createWriteStream(file);
+      const archive = archiver("zip", {
+        zlib: { level: 9 }, // Sets the compression level.
+      });
+
+      output.on("close", function () {
+        console.log(
+          file + " archived succesfully: " + archive.pointer() + " total bytes"
+        );
+      });
+
+      archive.on("warning", function (err: any) {
+        if (err.code === "ENOENT") {
+        } else {
+          resolve(false);
+          throw err;
+        }
+      });
+
+      // good practice to catch this error explicitly
+      archive.on("error", function (err: any) {
+        resolve(false);
+        throw err;
+      });
+
+      archive.pipe(output);
+      args.forEach((f) => {
+        archive.append(fs.createReadStream(f), {
+          name: f.substring(f.lastIndexOf(path.sep) + 1),
+        });
+      });
+      archive.finalize().then(() => {
+        resolve(true);
+      });
+    });
   }
 }
