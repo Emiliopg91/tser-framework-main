@@ -80,12 +80,6 @@ export class FileHelper {
         zlib: { level: 9 }, // Sets the compression level.
       });
 
-      output.on("close", function () {
-        console.log(
-          file + " archived succesfully: " + archive.pointer() + " total bytes"
-        );
-      });
-
       archive.on("warning", function (err: any) {
         if (err.code === "ENOENT") {
         } else {

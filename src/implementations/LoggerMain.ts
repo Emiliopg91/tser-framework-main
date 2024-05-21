@@ -80,23 +80,26 @@ export class LoggerMain {
       let now = new Date();
 
       if (fileDate.getDate() != now.getDate()) {
-        FileHelper.zipFiles(
-          path.join(
-            LoggerMain.OLD_FOLDER,
-            "application-" +
-              fileDate.getFullYear() +
-              "-" +
-              String(fileDate.getMonth() + 1).padStart(2, "0") +
-              "-" +
-              String(fileDate.getDate()).padStart(2, "0") +
-              ".zip"
-          ),
-          LoggerMain.LOG_FILE
-        )
+        const zipFile = path.join(
+          LoggerMain.OLD_FOLDER,
+          "application-" +
+            fileDate.getFullYear() +
+            "-" +
+            String(fileDate.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(fileDate.getDate()).padStart(2, "0") +
+            ".zip"
+        );
+        FileHelper.zipFiles(zipFile, LoggerMain.LOG_FILE)
           .then(() => {
             FileHelper.delete(LoggerMain.LOG_FILE);
+            FileHelper.append(
+              LoggerMain.LOG_FILE,
+              "Rotated log file to " + zipFile + "\n"
+            );
+            resolve();
           })
-          .finally(() => {
+          .catch(() => {
             resolve();
           });
       } else {
