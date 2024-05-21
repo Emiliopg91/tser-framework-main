@@ -80,25 +80,31 @@ export class LoggerMain {
     }
   }
 
-  private static archiveLogFile(): void {
-    const fileDate = new Date(FileHelper.getLastModified(LoggerMain.logFile));
-    let now = new Date();
+  private static archiveLogFile(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      const fileDate = new Date(FileHelper.getLastModified(LoggerMain.logFile));
+      let now = new Date();
 
-    if (fileDate.getDate() != now.getDate()) {
-      FileHelper.zipFiles(
-        LoggerMain.oldFolder +
-          "application-" +
-          fileDate.getFullYear() +
-          "-" +
-          (fileDate.getMonth() + 1) +
-          "-" +
-          fileDate.getDate()
-      ).then((res) => {
-        if (res) {
-          FileHelper.delete(LoggerMain.logFile);
-        }
-      });
-    }
+      if (fileDate.getDate() != now.getDate()) {
+        FileHelper.zipFiles(
+          LoggerMain.oldFolder +
+            "application-" +
+            fileDate.getFullYear() +
+            "-" +
+            (fileDate.getMonth() + 1) +
+            "-" +
+            fileDate.getDate()
+        )
+          .then((res) => {
+            if (res) {
+              FileHelper.delete(LoggerMain.logFile);
+            }
+          })
+          .finally(() => {
+            resolve();
+          });
+      }
+    });
   }
 
   /**
