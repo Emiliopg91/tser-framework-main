@@ -67,18 +67,26 @@ export class WindowHelper {
 
   public static createSplashScreen(
     windowConstructorOption: BrowserWindowConstructorOptions,
-    lifeTime: number
+    lifeTime: number,
+    forceDev: boolean = false
   ): Promise<void> {
     return new Promise<void>((resolve) => {
-      const splash = this.createWindow("splash.html", windowConstructorOption);
-      splash.show();
-      splash.center();
+      if (!is.dev || forceDev) {
+        const splash = this.createWindow(
+          "splash.html",
+          windowConstructorOption
+        );
+        splash.show();
+        splash.center();
 
-      setTimeout(async () => {
-        await this.fadeWindowOut(splash, 0.1, 10);
-        splash.close();
+        setTimeout(async () => {
+          await this.fadeWindowOut(splash, 0.1, 10);
+          splash.close();
+          resolve();
+        }, lifeTime);
+      } else {
         resolve();
-      }, lifeTime);
+      }
     });
   }
 

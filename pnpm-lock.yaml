@@ -16,8 +16,8 @@ devDependencies:
     specifier: ^3.0.0
     version: 3.0.0(electron@28.3.1)
   '@tser-framework/commons':
-    specifier: 2.0.14
-    version: 2.0.14
+    specifier: latest
+    version: 2.0.15
   async-mutex:
     specifier: ^0.5.0
     version: 0.5.0
@@ -577,8 +577,8 @@ packages:
       defer-to-connect: 2.0.1
     dev: true
 
-  /@tser-framework/commons@2.0.14:
-    resolution: {integrity: sha512-4XTirx38xdwQExnxzliAO8ZTULYLq3D62K1LSEzcQT7NUsqKA3Q8Fwwy9QlWRHATOWOGiI7yq14F64Uppzifqg==}
+  /@tser-framework/commons@2.0.15:
+    resolution: {integrity: sha512-551fVmgu20ZdadtJkR1aMZ16X+zJgcJi/SKbxlsOn49NVRT1r/oHl8St1Y08qHfnG3dI2iSrXm3nVbobXMMcMw==}
     dependencies:
       react: 18.3.1
     dev: true
