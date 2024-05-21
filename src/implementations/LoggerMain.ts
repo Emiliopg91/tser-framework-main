@@ -87,13 +87,16 @@ export class LoggerMain {
 
       if (fileDate.getDate() != now.getDate()) {
         FileHelper.zipFiles(
-          LoggerMain.oldFolder +
+          path.join(
+            LoggerMain.oldFolder,
             "application-" +
-            fileDate.getFullYear() +
-            "-" +
-            (fileDate.getMonth() + 1) +
-            "-" +
-            fileDate.getDate()
+              fileDate.getFullYear() +
+              "-" +
+              (fileDate.getMonth() + 1) +
+              "-" +
+              fileDate.getDate() +
+              ".zip"
+          )
         )
           .then((res) => {
             if (res) {
