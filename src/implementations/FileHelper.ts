@@ -2,9 +2,12 @@ import { app, shell } from "electron";
 import * as fs from "fs";
 import path from "path";
 import archiver from "archiver";
+import { OSHelper } from "./OSHelper";
 
 export class FileHelper {
   private constructor() {}
+
+  public static APP_DIR = path.join(OSHelper.getHome(), app.name);
 
   public static openWithDefaulApp(path: string): void {
     shell.openPath(path);

@@ -6,8 +6,7 @@ import {
 } from "@tser-framework/commons";
 import { FileHelper } from "./FileHelper";
 import path from "path";
-import { OSHelper } from "./OSHelper";
-import { app } from "electron";
+import { Mutex } from "async-mutex";
 
 /**
  * Represents a logging utility for frontend.
@@ -15,17 +14,11 @@ import { app } from "electron";
 export class LoggerMain {
   private constructor() {}
 
-  private static logFolder =
-    OSHelper.getHome() + path.sep + app.name + path.sep + "logs";
-  private static oldFolder =
-    OSHelper.getHome() +
-    path.sep +
-    app.name +
-    path.sep +
-    "logs" +
-    path.sep +
-    "old";
-  public static logFile = LoggerMain.logFolder + path.sep + "application.log";
+  private static mutex: Mutex = new Mutex();
+
+  private static LOG_FOLDER = path.join(FileHelper.APP_DIR, "logs");
+  private static OLD_FOLDER = path.join(LoggerMain.LOG_FOLDER, "old");
+  public static LOG_FILE = path.join(LoggerMain.LOG_FOLDER, "application.log");
 
   /**
    * The current log level.
@@ -36,14 +29,14 @@ export class LoggerMain {
    * Initializes the LoggerMain.
    */
   public static async initialize(): Promise<void> {
-    if (!FileHelper.exists(LoggerMain.logFolder)) {
-      FileHelper.mkdir(LoggerMain.logFolder, true);
+    if (!FileHelper.exists(LoggerMain.LOG_FOLDER)) {
+      FileHelper.mkdir(LoggerMain.LOG_FOLDER, true);
     }
-    if (!FileHelper.exists(LoggerMain.oldFolder)) {
-      FileHelper.mkdir(LoggerMain.oldFolder, true);
+    if (!FileHelper.exists(LoggerMain.OLD_FOLDER)) {
+      FileHelper.mkdir(LoggerMain.OLD_FOLDER, true);
     }
 
-    console.log("Logger writing to file " + LoggerMain.logFile);
+    console.log("Logger writing to file " + LoggerMain.LOG_FILE);
 
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
     LoggerMain.currentLevel = LogLevel[level as keyof typeof LogLevel];
@@ -54,57 +47,60 @@ export class LoggerMain {
    * @param lvl - The log level.
    * @param args - The message arguments.
    */
-  public static async log(
-    lvl: LogLevel,
-    category: string,
-    ...args: any
-  ): Promise<void> {
-    await LoggerMain.archiveLogFile();
-    if (LoggerMain.isLevelEnabled(lvl)) {
-      const today = new Date();
-      const dd = String(today.getDate()).padStart(2, "0");
-      const mm = String(today.getMonth() + 1).padStart(2, "0"); // January is 0!
-      const yyyy = today.getFullYear();
-      const hh = String(today.getHours()).padStart(2, "0");
-      const MM = String(today.getMinutes()).padStart(2, "0");
-      const ss = String(today.getSeconds()).padStart(2, "0");
-      const sss = String(today.getMilliseconds()).padEnd(3, "0");
-      const date = `${mm}/${dd}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
+  public static log(lvl: LogLevel, category: string, ...args: any) {
+    this.mutex.runExclusive(() => {
+      LoggerMain.archiveLogFile().then(() => {
+        if (LoggerMain.isLevelEnabled(lvl)) {
+          const today = new Date();
+          const dd = String(today.getDate()).padStart(2, "0");
+          const mm = String(today.getMonth() + 1).padStart(2, "0");
+          const yyyy = today.getFullYear();
+          const hh = String(today.getHours()).padStart(2, "0");
+          const MM = String(today.getMinutes()).padStart(2, "0");
+          const ss = String(today.getSeconds()).padStart(2, "0");
+          const sss = String(today.getMilliseconds()).padEnd(3, "0");
+          const date = `${mm}/${dd}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
 
-      const logEntry = `[${date}][${LogLevel[lvl].padEnd(
-        6,
-        " "
-      )}] (${category.padEnd(8, " ")}) - ${loggerArgsToString(...args)}`;
-      FileHelper.append(LoggerMain.logFile, logEntry + "\n");
-      console.log(logEntry);
-    }
+          const logEntry = `[${date}][${LogLevel[lvl].padEnd(
+            6,
+            " "
+          )}] (${category.padEnd(8, " ")}) - ${loggerArgsToString(...args)}`;
+          FileHelper.append(LoggerMain.LOG_FILE, logEntry + "\n");
+          console.log(logEntry);
+        }
+      });
+    });
   }
 
   private static archiveLogFile(): Promise<void> {
     return new Promise<void>((resolve) => {
-      const fileDate = new Date(FileHelper.getLastModified(LoggerMain.logFile));
+      const fileDate = new Date(
+        FileHelper.getLastModified(LoggerMain.LOG_FILE)
+      );
       let now = new Date();
 
       if (fileDate.getDate() != now.getDate()) {
         FileHelper.zipFiles(
           path.join(
-            LoggerMain.oldFolder,
+            LoggerMain.OLD_FOLDER,
             "application-" +
               fileDate.getFullYear() +
               "-" +
-              (fileDate.getMonth() + 1) +
+              String(fileDate.getMonth() + 1).padStart(2, "0") +
               "-" +
-              fileDate.getDate() +
+              String(fileDate.getDate()).padStart(2, "0") +
               ".zip"
           ),
-          LoggerMain.logFile
+          LoggerMain.LOG_FILE
         )
           .then(() => {
-            FileHelper.delete(LoggerMain.logFile);
+            FileHelper.delete(LoggerMain.LOG_FILE);
           })
           .finally(() => {
             resolve();
           });
+      } else {
+        resolve();
       }
     });
   }
