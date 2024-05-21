@@ -70,11 +70,8 @@ export class FileHelper {
     return fs.statSync(path).mtimeMs;
   }
 
-  public static zipFiles(
-    file: string,
-    ...args: Array<string>
-  ): Promise<boolean> {
-    return new Promise<boolean>((resolve) => {
+  public static zipFiles(file: string, ...args: Array<string>): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       const output = fs.createWriteStream(file);
       const archive = archiver("zip", {
         zlib: { level: 9 }, // Sets the compression level.
@@ -89,14 +86,14 @@ export class FileHelper {
       archive.on("warning", function (err: any) {
         if (err.code === "ENOENT") {
         } else {
-          resolve(false);
+          reject(err);
           throw err;
         }
       });
 
       // good practice to catch this error explicitly
       archive.on("error", function (err: any) {
-        resolve(false);
+        reject(err);
         throw err;
       });
 
@@ -107,7 +104,7 @@ export class FileHelper {
         });
       });
       archive.finalize().then(() => {
-        resolve(true);
+        resolve();
       });
     });
   }

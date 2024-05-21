@@ -59,7 +59,7 @@ export class LoggerMain {
     category: string,
     ...args: any
   ): Promise<void> {
-    LoggerMain.archiveLogFile();
+    await LoggerMain.archiveLogFile();
     if (LoggerMain.isLevelEnabled(lvl)) {
       const today = new Date();
       const dd = String(today.getDate()).padStart(2, "0");
@@ -96,12 +96,11 @@ export class LoggerMain {
               "-" +
               fileDate.getDate() +
               ".zip"
-          )
+          ),
+          LoggerMain.logFile
         )
-          .then((res) => {
-            if (res) {
-              FileHelper.delete(LoggerMain.logFile);
-            }
+          .then(() => {
+            FileHelper.delete(LoggerMain.logFile);
           })
           .finally(() => {
             resolve();
