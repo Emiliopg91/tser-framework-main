@@ -2,6 +2,7 @@ export { FileHelper } from "./implementations/FileHelper";
 export { LoggerMain } from "./implementations/LoggerMain";
 export { OSHelper } from "./implementations/OSHelper";
 export { Powershell } from "./implementations/Powershell";
+export { RestClient } from "./implementations/RestClient";
 export { Toaster } from "./implementations/Toaster";
 export { TranslatorMain } from "./implementations/TranslatorMain";
 export { TrayBuilder } from "./implementations/TrayHelper";
@@ -14,4 +15,5 @@ export {
   ProtocolBinding,
   defaultProtocolBindings,
 } from "./types/ProtocolBinding";
+export { RestClientRequest, RestClientResponse } from "./types/RestClient";
 export { WindowConfig } from "./types/WindowConfig";
