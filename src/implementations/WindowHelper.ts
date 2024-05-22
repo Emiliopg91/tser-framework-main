@@ -41,8 +41,8 @@ export class WindowHelper {
     const mainWindow = this.createWindow("index.html", windowConstructorOption);
 
     mainWindow.on("ready-to-show", () => {
-      mainWindow?.show();
       mainWindow?.maximize();
+      mainWindow?.show();
       if (is.dev) {
         mainWindow?.webContents.openDevTools();
       }
