@@ -35,10 +35,9 @@ export class WindowHelper {
   }
 
   public static createMainWindow(
-    windowConstructorOption: BrowserWindowConstructorOptions,
     windowConfig: WindowConfig
   ): BrowserWindow {
-    const mainWindow = this.createWindow("index.html", windowConstructorOption);
+    const mainWindow = this.createWindow("index.html", windowConfig.constructorOptions);
 
     mainWindow.on("ready-to-show", () => {
       mainWindow?.maximize();
