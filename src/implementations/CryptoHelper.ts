@@ -12,7 +12,7 @@ export class CryptoHelper {
   public static encryptSafeStorage(data: string): string {
     CryptoHelper.checkCipher();
     const dataToCipher =
-      String(Date.now()).padEnd(40) + Buffer.from(data).toString("base64");
+      String(Date.now()).padEnd(20) + Buffer.from(data).toString("base64");
     return (
       "{sse}" +
       safeStorage
