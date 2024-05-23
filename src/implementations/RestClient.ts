@@ -17,6 +17,7 @@ export class RestClient {
     request: RestClientRequest<T>
   ): Promise<RestClientResponse<T>> {
     return new Promise<RestClientResponse<T>>((resolve, reject) => {
+      const t0 = Date.now();
       const reqConfig: AxiosRequestConfig = {
         method,
         url: request.url,
@@ -25,30 +26,54 @@ export class RestClient {
         timeout: request.timeout,
         responseType: "json",
       };
-      LoggerMain.info(
+      let msg =
         "Invoking " +
-          reqConfig.url +
-          "\\n  Method: " +
-          reqConfig.method +
-          "\\n  Headers: " +
-          JSON.stringify(reqConfig.headers) +
-          "\\n  Body: " +
-          JSON.stringify(reqConfig.data) +
-          "\\n  Timeout: " +
-          reqConfig.timeout
-      );
+        reqConfig.url +
+        "\n  Method: " +
+        reqConfig.method +
+        "\n  Timeout: " +
+        reqConfig.timeout;
+      if (reqConfig.headers) {
+        msg += "\n  Headers: " + JSON.stringify(reqConfig.headers);
+      }
+      if (reqConfig.data) {
+        let body = JSON.stringify(reqConfig.data);
+        if (body.length > 300) {
+          body =
+            body.substring(0, 300) +
+            "... (" +
+            (body.length - 300) +
+            " more)";
+        }
+        msg += "\n  Body: " + body;
+      }
+
+      LoggerMain.info(msg);
       axios(reqConfig)
         .then((response) => {
-          LoggerMain.info(
+          let msg =
             "Response from " +
-              request.url +
-              "\\n  Status" +
-              response.status +
-              "\\n  Headers: " +
-              JSON.stringify(response.headers) +
-              "\\n  Body: " +
-              JSON.stringify(response.data)
-          );
+            request.url +
+            "\n  Time" +
+            (Date.now() - t0) +
+            "ms" +
+            "\n  Status" +
+            response.status;
+          if (response.headers) {
+            msg += "\n  Headers: " + JSON.stringify(response.headers);
+          }
+          if (response.data) {
+            let body = JSON.stringify(response.data);
+            if (body.length > 300) {
+              body =
+                body.substring(0, 300) +
+                "... (" +
+                (body.length - 300) +
+                " more)";
+            }
+            msg += "\n  Body: " + body;
+          }
+          LoggerMain.info(msg);
           resolve({
             status: response.status,
             headers: JSON.parse(JSON.stringify(response.headers)),
@@ -56,7 +81,14 @@ export class RestClient {
           });
         })
         .catch((err: any) => {
-          LoggerMain.error("Error invoking " + request.url, err);
+          LoggerMain.error(
+            "Error invoking " +
+              request.url +
+              " after " +
+              (Date.now() - t0) +
+              "ms",
+            err
+          );
           reject(err);
         });
     });
