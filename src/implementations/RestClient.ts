@@ -29,23 +29,28 @@ export class RestClient {
       let msg =
         "Invoking " +
         reqConfig.url +
-        "\n  Method: " +
+        "\n   Method: " +
         reqConfig.method +
         "\n  Timeout: " +
         reqConfig.timeout;
       if (reqConfig.headers) {
-        msg += "\n  Headers: " + JSON.stringify(reqConfig.headers);
+        let headers = JSON.stringify(reqConfig.headers);
+        if (headers.length > 300) {
+          headers =
+            headers.substring(0, 300) +
+            "... (" +
+            (headers.length - 300) +
+            " more)";
+        }
+        msg += "\n  Headers: " + headers;
       }
       if (reqConfig.data) {
         let body = JSON.stringify(reqConfig.data);
         if (body.length > 300) {
           body =
-            body.substring(0, 300) +
-            "... (" +
-            (body.length - 300) +
-            " more)";
+            body.substring(0, 300) + "... (" + (body.length - 300) + " more)";
         }
-        msg += "\n  Body: " + body;
+        msg += "\n     Body: " + body;
       }
 
       LoggerMain.info(msg);
@@ -54,13 +59,21 @@ export class RestClient {
           let msg =
             "Response from " +
             request.url +
-            "\n  Time" +
+            "\n     Time: " +
             (Date.now() - t0) +
             "ms" +
-            "\n  Status" +
+            "\n   Status: " +
             response.status;
           if (response.headers) {
-            msg += "\n  Headers: " + JSON.stringify(response.headers);
+            let headers = JSON.stringify(response.headers);
+            if (headers.length > 300) {
+              headers =
+                headers.substring(0, 300) +
+                "... (" +
+                (headers.length - 300) +
+                " more)";
+            }
+            msg += "\n  Headers: " + headers;
           }
           if (response.data) {
             let body = JSON.stringify(response.data);
@@ -71,7 +84,7 @@ export class RestClient {
                 (body.length - 300) +
                 " more)";
             }
-            msg += "\n  Body: " + body;
+            msg += "\n     Body: " + body;
           }
           LoggerMain.info(msg);
           resolve({
