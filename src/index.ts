@@ -15,5 +15,4 @@ export {
   ProtocolBinding,
   defaultProtocolBindings,
 } from "./types/ProtocolBinding";
-export { RestClientRequest, RestClientResponse } from "./types/RestClient";
 export { WindowConfig } from "./types/WindowConfig";

@@ -17,7 +17,7 @@ export interface IpcListener {
 export const defaultIpcListeners: Record<string, IpcListener> = {
   log: {
     type: "on",
-    fn: async (_, param: LoggerRequest): Promise<void> => {
+    fn(_: IpcMainInvokeEvent, param: LoggerRequest) {
       LoggerMain.log(
         LogLevel[param.level as keyof typeof LogLevel],
         "renderer",
@@ -27,7 +27,10 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
   },
   rest: {
     type: "handle",
-    fn<T>(_, request: RestClientRequest<T>): Promise<RestClientResponse<T>> {
+    fn<T>(
+      _: IpcMainInvokeEvent,
+      request: RestClientRequest<T>
+    ): Promise<RestClientResponse<T>> {
       return RestClientMain.invoke(request);
     },
   },
