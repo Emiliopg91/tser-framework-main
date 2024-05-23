@@ -13,22 +13,31 @@ export class CryptoHelper {
     CryptoHelper.checkCipher();
     const dataToCipher =
       String(Date.now()).padEnd(40) + Buffer.from(data).toString("base64");
-    return safeStorage
-      .encryptString(dataToCipher)
-      .toString("hex")
-      .split("")
-      .reverse()
-      .join("");
+    return (
+      "{sse}" +
+      safeStorage
+        .encryptString(dataToCipher)
+        .toString("hex")
+        .split("")
+        .reverse()
+        .join("")
+    );
   }
 
   public static decryptSafeStorage(data: string): string {
     CryptoHelper.checkCipher();
-    const b64 = Buffer.from(
-      safeStorage
-        .decryptString(Buffer.from(data.split("").reverse().join(""), "hex"))
-        .substring(40),
-      "base64"
-    ).toString();
-    return b64;
+    if (data.startsWith("{sse}")) {
+      const b64 = Buffer.from(
+        safeStorage
+          .decryptString(
+            Buffer.from(data.substring(5).split("").reverse().join(""), "hex")
+          )
+          .substring(40),
+        "base64"
+      ).toString();
+      return b64;
+    } else {
+      throw new Error("Unrecognized " + data.substring(0, 5) + " encription");
+    }
   }
 }
