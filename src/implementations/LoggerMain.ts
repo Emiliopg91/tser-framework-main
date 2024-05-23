@@ -14,7 +14,7 @@ import { Mutex } from "async-mutex";
 export class LoggerMain {
   private constructor() {}
 
-  private static mutex: Mutex = new Mutex();
+  private static MUTEX: Mutex = new Mutex();
 
   private static LOG_FOLDER = path.join(FileHelper.APP_DIR, "logs");
   private static OLD_FOLDER = path.join(LoggerMain.LOG_FOLDER, "old");
@@ -23,7 +23,9 @@ export class LoggerMain {
   /**
    * The current log level.
    */
-  private static currentLevel = LogLevel.INFO;
+  private static CURRENT_LEVEL = LogLevel.INFO;
+
+  private static TABS = 0;
 
   /**
    * Initializes the LoggerMain.
@@ -39,7 +41,21 @@ export class LoggerMain {
     console.log("Logger writing to file " + LoggerMain.LOG_FILE);
 
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
-    LoggerMain.currentLevel = LogLevel[level as keyof typeof LogLevel];
+    LoggerMain.CURRENT_LEVEL = LogLevel[level as keyof typeof LogLevel];
+  }
+
+  public static addTab(){
+    LoggerMain.MUTEX.acquire().then((release) => {
+      LoggerMain.TABS++;
+      release();
+    });
+  }
+
+  public static removeTab(){
+    LoggerMain.MUTEX.acquire().then((release) => {
+      LoggerMain.TABS--;
+      release();
+    });
   }
 
   /**
@@ -58,13 +74,14 @@ export class LoggerMain {
     const sss = String(today.getMilliseconds()).padEnd(3, "0");
     const date = `${mm}/${dd}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
 
-    LoggerMain.mutex.acquire().then((release) => {
+    LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.archiveLogFile().then(() => {
         if (LoggerMain.isLevelEnabled(lvl)) {
+          const tabs = "".padEnd(2 * LoggerMain.TABS, " ");
           const logEntry = `[${date}][${LogLevel[lvl].padEnd(
             6,
             " "
-          )}] (${category.padEnd(8, " ")}) - ${loggerArgsToString(...args)}`;
+          )}] (${category.padEnd(8, " ")}) - ${tabs}${loggerArgsToString(...args)}`;
           FileHelper.append(LoggerMain.LOG_FILE, logEntry + "\n");
           console.log(logEntry);
         }
@@ -116,7 +133,7 @@ export class LoggerMain {
    * @returns True if the log level is enabled, otherwise false.
    */
   private static isLevelEnabled(lvl: LogLevel): boolean {
-    return LoggerMain.currentLevel <= lvl;
+    return LoggerMain.CURRENT_LEVEL <= lvl;
   }
 
   /**
