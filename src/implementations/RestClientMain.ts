@@ -86,9 +86,11 @@ export class RestClientMain {
       request.url +
       "\n     Time: " +
       (Date.now() - t0) +
-      "ms" +
+      " ms" +
       "\n   Status: " +
-      response.status;
+      response.status +
+      " - " +
+      response.statusText;
     if (response.headers) {
       let headers = JSON.stringify(response.headers);
       if (headers.length > 300) {
