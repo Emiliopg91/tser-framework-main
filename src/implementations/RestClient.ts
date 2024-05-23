@@ -56,54 +56,63 @@ export class RestClient {
       LoggerMain.info(msg);
       axios(reqConfig)
         .then((response) => {
-          let msg =
-            "Response from " +
-            request.url +
-            "\n     Time: " +
-            (Date.now() - t0) +
-            "ms" +
-            "\n   Status: " +
-            response.status;
-          if (response.headers) {
-            let headers = JSON.stringify(response.headers);
-            if (headers.length > 300) {
-              headers =
-                headers.substring(0, 300) +
-                "... (" +
-                (headers.length - 300) +
-                " more)";
-            }
-            msg += "\n  Headers: " + headers;
-          }
-          if (response.data) {
-            let body = JSON.stringify(response.data);
-            if (body.length > 300) {
-              body =
-                body.substring(0, 300) +
-                "... (" +
-                (body.length - 300) +
-                " more)";
-            }
-            msg += "\n     Body: " + body;
-          }
-          LoggerMain.info(msg);
-          resolve({
-            status: response.status,
-            headers: JSON.parse(JSON.stringify(response.headers)),
-            data: JsonUtils.parse<T>(JSON.stringify(response.data)),
-          });
+          resolve(RestClient.dealResponse(t0, request, response));
         })
         .catch((err: any) => {
-          LoggerMain.error(
-            "Error invoking " +
-              request.url +
-              " after " +
-              (Date.now() - t0) +
-              "ms",
-            err
-          );
-          reject(err);
+          if (err.response && err.response.status) {
+            resolve(RestClient.dealResponse(t0, request, err.response));
+          } else {
+            LoggerMain.error(
+              "Error invoking " +
+                request.url +
+                " after " +
+                (Date.now() - t0) +
+                "ms",
+              err
+            );
+            reject(err);
+          }
         });
     });
+  }
+
+  private static dealResponse<T>(
+    t0: number,
+    request: RestClientRequest<T>,
+    response: any
+  ) {
+    let msg =
+      "Response from " +
+      request.url +
+      "\n     Time: " +
+      (Date.now() - t0) +
+      "ms" +
+      "\n   Status: " +
+      response.status;
+    if (response.headers) {
+      let headers = JSON.stringify(response.headers);
+      if (headers.length > 300) {
+        headers =
+          headers.substring(0, 300) +
+          "... (" +
+          (headers.length - 300) +
+          " more)";
+      }
+      msg += "\n  Headers: " + headers;
+    }
+    if (response.data) {
+      let body = JSON.stringify(response.data);
+      if (body.length > 300) {
+        body =
+          body.substring(0, 300) + "... (" + (body.length - 300) + " more)";
+      }
+      msg += "\n     Body: " + body;
+    }
+    LoggerMain.info(msg);
+    return {
+      status: response.status,
+      headers: JSON.parse(JSON.stringify(response.headers)),
+      data: JsonUtils.parse<T>(JSON.stringify(response.data)),
+    };
   }
 }
