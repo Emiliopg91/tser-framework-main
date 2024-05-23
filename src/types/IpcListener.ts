@@ -1,6 +1,12 @@
 import { IpcMainInvokeEvent } from "electron";
 import { LoggerMain } from "../implementations/LoggerMain";
-import { LogLevel, LoggerRequest } from "@tser-framework/commons";
+import {
+  LogLevel,
+  LoggerRequest,
+  RestClientRequest,
+  RestClientResponse,
+} from "@tser-framework/commons";
+import { RestClientMain } from "../implementations/RestClientMain";
 
 export interface IpcListener {
   type: "handle" | "on";
@@ -17,6 +23,12 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
         "renderer",
         param.msg
       );
+    },
+  },
+  rest: {
+    type: "handle",
+    fn<T>(_, request: RestClientRequest<T>): Promise<RestClientResponse<T>> {
+      return RestClientMain.invoke(request);
     },
   },
 };

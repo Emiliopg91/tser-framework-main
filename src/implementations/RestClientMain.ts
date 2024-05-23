@@ -1,28 +1,28 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { RestClientRequest, RestClientResponse } from "../types/RestClient";
 import { LoggerMain } from "./LoggerMain";
-import { JsonUtils } from "@tser-framework/commons";
+import {
+  JsonUtils,
+  HttpMethod,
+  RestClientRequest,
+  RestClientResponse,
+} from "@tser-framework/commons";
 
-export class RestClient {
+export class RestClientMain {
   private constructor() {}
 
-  public static get<T>(
-    request: RestClientRequest<T>
-  ): Promise<RestClientResponse<T>> {
-    return RestClient.invoke("GET", request);
-  }
-
-  private static invoke<T>(
-    method: "GET" | "PUT" | "POST" | "DELETE",
+  public static invoke<T>(
     request: RestClientRequest<T>
   ): Promise<RestClientResponse<T>> {
     return new Promise<RestClientResponse<T>>((resolve, reject) => {
       const t0 = Date.now();
       const reqConfig: AxiosRequestConfig = {
-        method,
+        method: HttpMethod[request.method],
         url: request.url,
         headers: request.headers,
-        data: method == "POST" || method == "PUT" ? request.data : undefined,
+        data:
+          request.method == HttpMethod.POST || request.method == HttpMethod.PUT
+            ? request.data
+            : undefined,
         timeout: request.timeout,
         responseType: "json",
       };
@@ -56,11 +56,11 @@ export class RestClient {
       LoggerMain.info(msg);
       axios(reqConfig)
         .then((response) => {
-          resolve(RestClient.dealResponse(t0, request, response));
+          resolve(RestClientMain.dealResponse(t0, request, response));
         })
         .catch((err: any) => {
           if (err.response && err.response.status) {
-            resolve(RestClient.dealResponse(t0, request, err.response));
+            resolve(RestClientMain.dealResponse(t0, request, err.response));
           } else {
             LoggerMain.error(
               "Error invoking " +
