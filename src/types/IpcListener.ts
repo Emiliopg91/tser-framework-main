@@ -9,14 +9,14 @@ import {
 import { RestClientMain } from "../implementations/RestClientMain";
 
 export interface IpcListener {
-  type: "handle" | "on";
+  sync: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fn: (e: IpcMainInvokeEvent, ...params: any) => unknown;
 }
 
 export const defaultIpcListeners: Record<string, IpcListener> = {
   log: {
-    type: "on",
+    sync: false,
     fn(_: IpcMainInvokeEvent, param: LoggerRequest) {
       LoggerMain.log(
         LogLevel[param.level as keyof typeof LogLevel],
@@ -26,7 +26,7 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
     },
   },
   rest: {
-    type: "handle",
+    sync: true,
     fn<T>(
       _: IpcMainInvokeEvent,
       request: RestClientRequest<T>
