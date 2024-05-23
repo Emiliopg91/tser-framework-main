@@ -32,7 +32,7 @@ export class CryptoHelper {
           .decryptString(
             Buffer.from(data.substring(5).split("").reverse().join(""), "hex")
           )
-          .substring(40),
+          .substring(20),
         "base64"
       ).toString();
       return b64;
