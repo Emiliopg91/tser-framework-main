@@ -31,6 +31,10 @@ export class ConfigurationHelper {
       value: any
     ) {
       target[String(key)] = value;
+      FileHelper.append(
+        ConfigurationHelper.CONFIG_FILE,
+        JsonUtils.serialize(ConfigurationHelper.CONFIG_MAP)
+      );
       return true;
     },
   };
