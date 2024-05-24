@@ -31,6 +31,19 @@ export class ConfigurationHelper {
     ConfigurationHelper.CONFIG_MAP = JSON.parse(cfgJson);
   }
 
+  public static configAsInterface<T>(): T {
+    return new Proxy(ConfigurationHelper.CONFIG_MAP, {
+      set: function (
+        target: Record<string, any>,
+        key: string | symbol,
+        value: any
+      ) {
+        target[String(key)] = value;
+        return true;
+      },
+    }) as T;
+  }
+
   public static getValue<T>(key: string): T | undefined {
     return JsonUtils.getValue<T>(key, ConfigurationHelper.CONFIG_MAP);
   }
