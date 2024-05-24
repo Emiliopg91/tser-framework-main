@@ -6,7 +6,6 @@ import {
 import { is } from "@electron-toolkit/utils";
 import { join } from "path";
 import { WindowConfig } from "../types/WindowConfig";
-import { LoggerMain } from "./LoggerMain";
 
 export class WindowHelper {
   public static createWindow(
