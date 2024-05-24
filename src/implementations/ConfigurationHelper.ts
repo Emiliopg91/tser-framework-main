@@ -16,7 +16,10 @@ export class ConfigurationHelper {
   private static CONFIG_MAP: Record<string, any> = {};
   private static PROXY_HANDLER: ProxyHandler<Record<string, any>> = {
     get(target, key) {
-      if (typeof target[String(key)] === "object" && target[key] !== null) {
+      if (
+        typeof target[String(key)] === "object" &&
+        target[String(key)] !== null
+      ) {
         return new Proxy(
           target[String(key)],
           ConfigurationHelper.PROXY_HANDLER
