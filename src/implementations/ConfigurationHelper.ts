@@ -14,6 +14,26 @@ export class ConfigurationHelper {
     "config.json"
   );
   private static CONFIG_MAP: Record<string, any> = {};
+  private static PROXY_HANDLER: ProxyHandler<Record<string, any>> = {
+    get(target, key) {
+      if (typeof target[String(key)] === "object" && target[key] !== null) {
+        return new Proxy(
+          target[String(key)],
+          ConfigurationHelper.PROXY_HANDLER
+        );
+      } else {
+        return target[String(key)];
+      }
+    },
+    set: function (
+      target: Record<string, any>,
+      key: string | symbol,
+      value: any
+    ) {
+      target[String(key)] = value;
+      return true;
+    },
+  };
 
   public static initialize(defaultConfig: Record<string, any> = {}) {
     if (!FileHelper.exists(ConfigurationHelper.CONFIG_FOLDER)) {
@@ -32,16 +52,10 @@ export class ConfigurationHelper {
   }
 
   public static configAsInterface<T>(): T {
-    return new Proxy(ConfigurationHelper.CONFIG_MAP, {
-      set: function (
-        target: Record<string, any>,
-        key: string | symbol,
-        value: any
-      ) {
-        target[String(key)] = value;
-        return true;
-      },
-    }) as T;
+    return new Proxy(
+      ConfigurationHelper.CONFIG_MAP,
+      ConfigurationHelper.PROXY_HANDLER
+    ) as T;
   }
 
   public static getValue<T>(key: string): T | undefined {
