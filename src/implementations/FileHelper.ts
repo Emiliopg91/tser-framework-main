@@ -48,6 +48,14 @@ export class FileHelper {
     fs.rmSync(path);
   }
 
+  public static read(path: string): string {
+    return fs.readFileSync(path).toString();
+  }
+
+  public static write(path: string, data: string): void {
+    fs.writeFileSync(path, data);
+  }
+
   public static asarPathToAbsolute(filePath: string): string {
     return filePath.replace(".asar" + path.sep, ".asar.unpacked" + path.sep);
   }

@@ -20,10 +20,10 @@ devDependencies:
     version: 1.0.1(eslint@8.57.0)(typescript@5.4.5)
   '@electron-toolkit/utils':
     specifier: ^3.0.0
-    version: 3.0.0(electron@28.3.2)
+    version: 3.0.0(electron@28.3.3)
   '@tser-framework/commons':
     specifier: latest
-    version: 2.0.19
+    version: 2.0.23
   '@types/archiver':
     specifier: ^6.0.2
     version: 6.0.2
@@ -31,8 +31,8 @@ devDependencies:
     specifier: ^0.5.0
     version: 0.5.0
   electron:
-    specifier: ^28.3.2
-    version: 28.3.2
+    specifier: ^28.3.3
+    version: 28.3.3
   eslint:
     specifier: ^8.57.0
     version: 8.57.0
@@ -82,12 +82,12 @@ packages:
       - supports-color
     dev: true
 
-  /@electron-toolkit/utils@3.0.0(electron@28.3.2):
+  /@electron-toolkit/utils@3.0.0(electron@28.3.3):
     resolution: {integrity: sha512-GaXHDhiT7KCvMJjXdp/QqpYinq69T/Pdl49Z1XLf8mKGf63dnsODMWyrmIjEQ0z/vG7dO8qF3fvmI6Eb2lUNZA==}
     peerDependencies:
       electron: '>=13.0.0'
     dependencies:
-      electron: 28.3.2
+      electron: 28.3.3
     dev: true
 
   /@electron/get@2.0.3:
@@ -584,8 +584,8 @@ packages:
       defer-to-connect: 2.0.1
     dev: true
 
-  /@tser-framework/commons@2.0.19:
-    resolution: {integrity: sha512-/L072BrowVYu/qLW8bO0btKpZUwNtzUd4tYMEHCYlxeOU56F+gMxEz9cOh/4ZYYcsT+lnxIUHtFE493KujIR4A==}
+  /@tser-framework/commons@2.0.23:
+    resolution: {integrity: sha512-72yTRGG7J5J+rbIF08st0pZMMBRqizlKOIs8K8C7Fo/E+2O6wkE45kOHkKhVdojPj4gjr7oSOLHqExn8gNT+KQ==}
     dependencies:
       react: 18.3.1
     dev: true
@@ -859,7 +859,7 @@ packages:
     resolution: {integrity: sha512-wuLJMmIBQYCsGZgYLTy5FIB2pF6Lfb6cXMSF8Qywwk3t20zWnAi7zLcQFdKQmIB8wyZpY5ER38x08GbwtR2cLA==}
     engines: {node: '>= 14'}
     dependencies:
-      glob: 10.3.16
+      glob: 10.4.1
       graceful-fs: 4.2.11
       is-stream: 2.0.1
       lazystream: 1.0.1
@@ -1315,8 +1315,8 @@ packages:
   /eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  /electron@28.3.2:
-    resolution: {integrity: sha512-bmrQpdncbYNTArlg4n+qsASoXy3eeCELxeRmwUS52RNgvio1gGx5FLCwf8d4R+TsxwfkDWOaWbW0taIKheivKA==}
+  /electron@28.3.3:
+    resolution: {integrity: sha512-ObKMLSPNhomtCOBAxFS8P2DW/4umkh72ouZUlUKzXGtYuPzgr1SYhskhFWgzAsPtUzhL2CzyV2sfbHcEW4CXqw==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
     requiresBuild: true
@@ -1885,15 +1885,15 @@ packages:
       is-glob: 4.0.3
     dev: true
 
-  /glob@10.3.16:
-    resolution: {integrity: sha512-JDKXl1DiuuHJ6fVS2FXjownaavciiHNUU4mOvV/B793RLh05vZL1rcPnCSaOgv1hDT6RDlY7AB7ZUvFYAtPgAw==}
+  /glob@10.4.1:
+    resolution: {integrity: sha512-2jelhlq3E4ho74ZyVLN03oKdAZVUa6UDZzFLVH1H7dnoax+y9qyaq8zBkfDIggjniU19z0wU18y16jMB2eyVIw==}
     engines: {node: '>=16 || 14 >=14.18'}
     hasBin: true
     dependencies:
       foreground-child: 3.1.1
       jackspeak: 3.1.2
       minimatch: 9.0.4
-      minipass: 7.1.1
+      minipass: 7.1.2
       path-scurry: 1.11.1
 
   /glob@7.2.3:
@@ -2481,8 +2481,8 @@ packages:
     dependencies:
       brace-expansion: 2.0.1
 
-  /minipass@7.1.1:
-    resolution: {integrity: sha512-UZ7eQ+h8ywIRAW1hIEl2AqdwzJucU/Kp59+8kkZeSvafXhZjul247BvIJjEVFVeON6d7lM46XX1HXCduKAS8VA==}
+  /minipass@7.1.2:
+    resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
 
   /ms@2.1.2:
@@ -2652,7 +2652,7 @@ packages:
     engines: {node: '>=16 || 14 >=14.18'}
     dependencies:
       lru-cache: 10.2.2
-      minipass: 7.1.1
+      minipass: 7.1.2
 
   /path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
@@ -3147,7 +3147,7 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       commander: 4.1.1
-      glob: 10.3.16
+      glob: 10.4.1
       lines-and-columns: 1.2.4
       mz: 2.7.0
       pirates: 4.0.6
