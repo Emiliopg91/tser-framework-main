@@ -1,3 +1,4 @@
+export { ConfigurationHelper } from "./implementations/ConfigurationHelper";
 export { CryptoHelper } from "./implementations/CryptoHelper";
 export { FileHelper } from "./implementations/FileHelper";
 export { LoggerMain } from "./implementations/LoggerMain";
