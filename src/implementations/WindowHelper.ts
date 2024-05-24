@@ -34,10 +34,11 @@ export class WindowHelper {
     return window;
   }
 
-  public static createMainWindow(
-    windowConfig: WindowConfig
-  ): BrowserWindow {
-    const mainWindow = this.createWindow("index.html", windowConfig.constructorOptions);
+  public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
+    const mainWindow = this.createWindow(
+      "index.html",
+      windowConfig.constructorOptions
+    );
 
     mainWindow.on("ready-to-show", () => {
       mainWindow?.maximize();
@@ -45,7 +46,6 @@ export class WindowHelper {
       if (is.dev) {
         mainWindow?.webContents.openDevTools();
       }
-      LoggerMain.system("---------------- Started renderer ----------------");
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,11 +54,6 @@ export class WindowHelper {
         event.preventDefault();
         mainWindow?.hide();
       }
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mainWindow.on("closed", () => {
-      LoggerMain.system("---------------- Stopped renderer ----------------");
     });
 
     return mainWindow;
