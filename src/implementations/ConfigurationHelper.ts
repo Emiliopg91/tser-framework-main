@@ -34,7 +34,7 @@ export class ConfigurationHelper {
       value: any
     ) {
       target[String(key)] = value;
-      FileHelper.append(
+      FileHelper.write(
         ConfigurationHelper.CONFIG_FILE,
         JsonUtils.serialize(ConfigurationHelper.CONFIG_MAP)
       );
@@ -48,7 +48,7 @@ export class ConfigurationHelper {
     }
 
     if (!FileHelper.exists(ConfigurationHelper.CONFIG_FILE)) {
-      FileHelper.append(
+      FileHelper.write(
         ConfigurationHelper.CONFIG_FILE,
         JsonUtils.serialize(defaultConfig)
       );
