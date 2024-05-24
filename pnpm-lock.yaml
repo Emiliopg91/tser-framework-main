@@ -23,7 +23,7 @@ devDependencies:
     version: 3.0.0(electron@28.3.3)
   '@tser-framework/commons':
     specifier: latest
-    version: 2.0.23
+    version: 2.0.25
   '@types/archiver':
     specifier: ^6.0.2
     version: 6.0.2
@@ -584,8 +584,8 @@ packages:
       defer-to-connect: 2.0.1
     dev: true
 
-  /@tser-framework/commons@2.0.23:
-    resolution: {integrity: sha512-72yTRGG7J5J+rbIF08st0pZMMBRqizlKOIs8K8C7Fo/E+2O6wkE45kOHkKhVdojPj4gjr7oSOLHqExn8gNT+KQ==}
+  /@tser-framework/commons@2.0.25:
+    resolution: {integrity: sha512-U/nckjy+nSAOwlm27RfLyQiboWcJ1/LAto2tfcLBqTaxoP0D3oMB8SR5Tku6RgITS7+ygcjTSMUO6fBRhEVq+w==}
     dependencies:
       react: 18.3.1
     dev: true
