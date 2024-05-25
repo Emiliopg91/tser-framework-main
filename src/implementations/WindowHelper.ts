@@ -8,7 +8,7 @@ import { join } from "path";
 import { WindowConfig } from "../types/WindowConfig";
 
 export class WindowHelper {
-  private static EVERY_WINDOW: Array<BrowserWindow> = [];
+  private static WINDOWS: Record<string, BrowserWindow> = {};
 
   public static createWindow(
     file: string,
@@ -32,13 +32,18 @@ export class WindowHelper {
       return { action: "deny" };
     });
 
-    WindowHelper.EVERY_WINDOW.push(window);
+    const id = String(Date.now());
+    window.on("close", () => {
+      delete WindowHelper.WINDOWS[id];
+    });
+
+    WindowHelper.WINDOWS[id] = window;
 
     return window;
   }
 
   public static getAllWindows(): Array<BrowserWindow> {
-    return [...WindowHelper.EVERY_WINDOW];
+    return Object.values(WindowHelper.WINDOWS);
   }
 
   public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
