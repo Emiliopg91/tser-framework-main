@@ -78,6 +78,10 @@ export class ConfigurationHelper {
     ) as T;
   }
 
+  public static config(): Record<string, any> {
+    return ConfigurationHelper.CONFIG_MAP;
+  }
+
   public static getValue<T>(key: string): T | undefined {
     return JsonUtils.getValue<T>(key, ConfigurationHelper.CONFIG_MAP);
   }

@@ -7,6 +7,7 @@ import {
   RestClientResponse,
 } from "@tser-framework/commons";
 import { RestClientMain } from "../implementations/RestClientMain";
+import { ConfigurationHelper } from "../implementations/ConfigurationHelper";
 
 export interface IpcListener {
   sync: boolean;
@@ -32,6 +33,12 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
       request: RestClientRequest<T>
     ): Promise<RestClientResponse<T>> {
       return RestClientMain.invoke(request);
+    },
+  },
+  cfg: {
+    sync: true,
+    fn(): Record<string, any> {
+      return ConfigurationHelper.config();
     },
   },
 };
