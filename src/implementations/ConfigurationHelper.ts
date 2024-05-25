@@ -34,13 +34,27 @@ export class ConfigurationHelper {
       value: any
     ) {
       target[String(key)] = value;
-      FileHelper.write(
-        ConfigurationHelper.CONFIG_FILE,
-        JsonUtils.serialize(ConfigurationHelper.CONFIG_MAP)
-      );
+      ConfigurationHelper.persist();
+      ConfigurationHelper.notify();
       return true;
     },
   };
+
+  private static SUBSCRIPTORS: Record<
+    string,
+    (cfg: Record<string, any>) => void
+  > = {};
+
+  public static registerForChange(
+    callback: (cfg: Record<string, any>) => void,
+    id: string = String(Date.now())
+  ): () => void {
+    ConfigurationHelper.SUBSCRIPTORS[id] = callback;
+
+    return () => {
+      delete ConfigurationHelper.SUBSCRIPTORS[id];
+    };
+  }
 
   public static initialize(defaultConfig: Record<string, any> = {}) {
     if (!FileHelper.exists(ConfigurationHelper.CONFIG_FOLDER)) {
@@ -48,14 +62,13 @@ export class ConfigurationHelper {
     }
 
     if (!FileHelper.exists(ConfigurationHelper.CONFIG_FILE)) {
-      FileHelper.write(
-        ConfigurationHelper.CONFIG_FILE,
-        JsonUtils.serialize(defaultConfig)
-      );
+      ConfigurationHelper.CONFIG_MAP = defaultConfig;
+      ConfigurationHelper.notify();
+      ConfigurationHelper.persist();
+    } else {
+      const cfgJson: string = FileHelper.read(ConfigurationHelper.CONFIG_FILE);
+      ConfigurationHelper.CONFIG_MAP = JSON.parse(cfgJson);
     }
-
-    const cfgJson: string = FileHelper.read(ConfigurationHelper.CONFIG_FILE);
-    ConfigurationHelper.CONFIG_MAP = JSON.parse(cfgJson);
   }
 
   public static configAsInterface<T>(): T {
@@ -71,9 +84,22 @@ export class ConfigurationHelper {
 
   public static setValue<T>(key: string, value: T): void {
     JsonUtils.setValue<T>(key, value, ConfigurationHelper.CONFIG_MAP);
+    ConfigurationHelper.notify();
+    ConfigurationHelper.persist();
+  }
+
+  private static persist() {
     FileHelper.write(
       ConfigurationHelper.CONFIG_FILE,
       JsonUtils.serialize(ConfigurationHelper.CONFIG_MAP)
     );
+  }
+
+  private static notify() {
+    for (const id in ConfigurationHelper.SUBSCRIPTORS) {
+      (async () => {
+        ConfigurationHelper.SUBSCRIPTORS[id](ConfigurationHelper.CONFIG_MAP);
+      })();
+    }
   }
 }
