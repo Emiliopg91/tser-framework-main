@@ -34,14 +34,14 @@ export class TrayBuilder {
       }
 
       if (this.contextMenu) {
-        JsonUtils.modifyObject(
+        const menu = JsonUtils.modifyObject(
           this.contextMenu,
           ["label"],
           (_, value: unknown) => {
             return TranslatorMain.translate(value as string);
           }
         );
-        tray.setContextMenu(Menu.buildFromTemplate(this.contextMenu));
+        tray.setContextMenu(Menu.buildFromTemplate(menu));
       }
 
       return tray;
