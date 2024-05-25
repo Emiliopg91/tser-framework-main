@@ -39,16 +39,13 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
   cfg: {
     sync: true,
     fn(): Record<string, any> {
-      return JsonUtils.modifyObject(
-        ConfigurationHelper.config(),
-        "*",
-        (_: string, value: unknown) => {
-          if (String(value).startsWith("{enc}")) {
-            return "<secret value>";
-          }
-          return value;
+      const cfg = JSON.parse(JSON.stringify(ConfigurationHelper.config()));
+      return JsonUtils.modifyObject(cfg, "*", (_: string, value: unknown) => {
+        if (String(value).startsWith("{enc}")) {
+          return "<secret value>";
         }
-      );
+        return value;
+      });
     },
   },
 };
