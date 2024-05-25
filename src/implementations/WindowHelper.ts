@@ -8,8 +8,6 @@ import { join } from "path";
 import { WindowConfig } from "../types/WindowConfig";
 
 export class WindowHelper {
-  private static WINDOWS: Record<string, BrowserWindow> = {};
-
   public static createWindow(
     file: string,
     windowConstructorOption: BrowserWindowConstructorOptions
@@ -32,18 +30,7 @@ export class WindowHelper {
       return { action: "deny" };
     });
 
-    const id = String(Date.now());
-    window.on("close", () => {
-      delete WindowHelper.WINDOWS[id];
-    });
-
-    WindowHelper.WINDOWS[id] = window;
-
     return window;
-  }
-
-  public static getAllWindows(): Array<BrowserWindow> {
-    return Object.values(WindowHelper.WINDOWS);
   }
 
   public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
