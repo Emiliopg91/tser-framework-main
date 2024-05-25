@@ -14,7 +14,7 @@ export class CryptoHelper {
     const dataToCipher =
       String(Date.now()).padEnd(20) + Buffer.from(data).toString("base64");
     return (
-      "{sse}" +
+      "{enc}{sse}" +
       safeStorage
         .encryptString(dataToCipher)
         .toString("hex")
@@ -26,11 +26,11 @@ export class CryptoHelper {
 
   public static decryptSafeStorage(data: string): string {
     CryptoHelper.checkCipher();
-    if (data.startsWith("{sse}")) {
+    if (data.startsWith("{enc}{sse}")) {
       const b64 = Buffer.from(
         safeStorage
           .decryptString(
-            Buffer.from(data.substring(5).split("").reverse().join(""), "hex")
+            Buffer.from(data.substring(10).split("").reverse().join(""), "hex")
           )
           .substring(20),
         "base64"

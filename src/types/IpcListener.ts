@@ -1,6 +1,7 @@
 import { IpcMainInvokeEvent } from "electron";
 import { LoggerMain } from "../implementations/LoggerMain";
 import {
+  JsonUtils,
   LogLevel,
   LoggerRequest,
   RestClientRequest,
@@ -38,7 +39,16 @@ export const defaultIpcListeners: Record<string, IpcListener> = {
   cfg: {
     sync: true,
     fn(): Record<string, any> {
-      return ConfigurationHelper.config();
+      return JsonUtils.modifyObject(
+        ConfigurationHelper.config(),
+        "*",
+        (_: string, value: unknown) => {
+          if (String(value).startsWith("{enc}")) {
+            return "<secret value>";
+          }
+          return value;
+        }
+      );
     },
   },
 };
