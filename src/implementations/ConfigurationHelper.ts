@@ -38,6 +38,15 @@ export class ConfigurationHelper {
       ConfigurationHelper.notify();
       return true;
     },
+    deleteProperty: function (
+      target: Record<string, any>,
+      key: string | symbol
+    ) {
+      delete target[String(key)];
+      ConfigurationHelper.persist();
+      ConfigurationHelper.notify();
+      return true;
+    },
   };
 
   private static SUBSCRIPTORS: Record<
