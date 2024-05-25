@@ -8,6 +8,8 @@ import { join } from "path";
 import { WindowConfig } from "../types/WindowConfig";
 
 export class WindowHelper {
+  private static EVERY_WINDOW: Array<BrowserWindow> = [];
+
   public static createWindow(
     file: string,
     windowConstructorOption: BrowserWindowConstructorOptions
@@ -30,7 +32,13 @@ export class WindowHelper {
       return { action: "deny" };
     });
 
+    WindowHelper.EVERY_WINDOW.push(window);
+
     return window;
+  }
+
+  public static getAllWindows(): Array<BrowserWindow> {
+    return [...WindowHelper.EVERY_WINDOW];
   }
 
   public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
