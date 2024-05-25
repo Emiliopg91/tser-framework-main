@@ -9,6 +9,20 @@ export class CryptoHelper {
     }
   }
 
+  public static decrypt(data: string) {
+    if (data.startsWith("{enc}")) {
+      if (data.startsWith("{enc}{sse}")) {
+        return CryptoHelper.decryptSafeStorage(data);
+      } else {
+        throw new Error(
+          "Unrecognized " + data.substring(5, 10) + " encription"
+        );
+      }
+    } else {
+      throw new Error("Data not encrypted");
+    }
+  }
+
   public static encryptSafeStorage(data: string): string {
     CryptoHelper.checkCipher();
     const dataToCipher =
@@ -37,7 +51,7 @@ export class CryptoHelper {
       ).toString();
       return b64;
     } else {
-      throw new Error("Unrecognized " + data.substring(0, 5) + " encription");
+      throw new Error("Unrecognized " + data.substring(5, 10) + " encription");
     }
   }
 }

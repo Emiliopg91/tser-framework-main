@@ -1,6 +1,7 @@
 import path from "path";
 import { FileHelper } from "./FileHelper";
 import { JsonUtils } from "@tser-framework/commons";
+import { CryptoHelper } from "./CryptoHelper";
 
 export class ConfigurationHelper {
   private constructor() {}
@@ -84,6 +85,18 @@ export class ConfigurationHelper {
 
   public static getValue<T>(key: string): T | undefined {
     return JsonUtils.getValue<T>(key, ConfigurationHelper.CONFIG_MAP);
+  }
+
+  public static getSecretValue(key: string): string | undefined {
+    const prop = JsonUtils.getValue<string>(
+      key,
+      ConfigurationHelper.CONFIG_MAP
+    );
+    if (prop) {
+      return CryptoHelper.decrypt(prop);
+    } else {
+      return undefined;
+    }
   }
 
   public static setValue<T>(key: string, value: T): void {
