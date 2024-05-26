@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  DefaulLevel,
-  LogLevel,
-  loggerArgsToString,
-} from "@tser-framework/commons";
-import { FileHelper } from "./FileHelper";
-import path from "path";
-import { Mutex } from "async-mutex";
+import { DefaulLevel, LogLevel, loggerArgsToString } from '@tser-framework/commons';
+import { FileHelper } from './FileHelper';
+import path from 'path';
+import { Mutex } from 'async-mutex';
 
 /**
  * Represents a logging utility for frontend.
@@ -16,9 +12,9 @@ export class LoggerMain {
 
   private static MUTEX: Mutex = new Mutex();
 
-  private static LOG_FOLDER = path.join(FileHelper.APP_DIR, "logs");
-  private static OLD_FOLDER = path.join(LoggerMain.LOG_FOLDER, "old");
-  public static LOG_FILE = path.join(LoggerMain.LOG_FOLDER, "application.log");
+  private static LOG_FOLDER = path.join(FileHelper.APP_DIR, 'logs');
+  private static OLD_FOLDER = path.join(LoggerMain.LOG_FOLDER, 'old');
+  public static LOG_FILE = path.join(LoggerMain.LOG_FOLDER, 'application.log');
 
   /**
    * The current log level.
@@ -38,20 +34,20 @@ export class LoggerMain {
       FileHelper.mkdir(LoggerMain.OLD_FOLDER, true);
     }
 
-    console.log("Logger writing to file " + LoggerMain.LOG_FILE);
+    console.log('Logger writing to file ' + LoggerMain.LOG_FILE);
 
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
     LoggerMain.CURRENT_LEVEL = LogLevel[level as keyof typeof LogLevel];
   }
 
-  public static addTab(){
+  public static addTab(): void {
     LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.TABS++;
       release();
     });
   }
 
-  public static removeTab(){
+  public static removeTab(): void {
     LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.TABS--;
       release();
@@ -65,24 +61,24 @@ export class LoggerMain {
    */
   public static log(lvl: LogLevel, category: string, ...args: any): void {
     const today = new Date();
-    const dd = String(today.getDate()).padStart(2, "0");
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
     const yyyy = today.getFullYear();
-    const hh = String(today.getHours()).padStart(2, "0");
-    const MM = String(today.getMinutes()).padStart(2, "0");
-    const ss = String(today.getSeconds()).padStart(2, "0");
-    const sss = String(today.getMilliseconds()).padEnd(3, "0");
+    const hh = String(today.getHours()).padStart(2, '0');
+    const MM = String(today.getMinutes()).padStart(2, '0');
+    const ss = String(today.getSeconds()).padStart(2, '0');
+    const sss = String(today.getMilliseconds()).padEnd(3, '0');
     const date = `${mm}/${dd}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
 
     LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.archiveLogFile().then(() => {
         if (LoggerMain.isLevelEnabled(lvl)) {
-          const tabs = "".padEnd(2 * LoggerMain.TABS, " ");
+          const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
           const logEntry = `[${date}][${LogLevel[lvl].padEnd(
             6,
-            " "
-          )}] (${category.padEnd(8, " ")}) - ${tabs}${loggerArgsToString(...args)}`;
-          FileHelper.append(LoggerMain.LOG_FILE, logEntry + "\n");
+            ' '
+          )}] (${category.padEnd(8, ' ')}) - ${tabs}${loggerArgsToString(...args)}`;
+          FileHelper.append(LoggerMain.LOG_FILE, logEntry + '\n');
           console.log(logEntry);
         }
         release();
@@ -92,30 +88,25 @@ export class LoggerMain {
 
   private static archiveLogFile(): Promise<void> {
     return new Promise<void>((resolve) => {
-      const fileDate = new Date(
-        FileHelper.getLastModified(LoggerMain.LOG_FILE)
-      );
-      let now = new Date();
+      const fileDate = new Date(FileHelper.getLastModified(LoggerMain.LOG_FILE));
+      const now = new Date();
 
       if (fileDate.getDate() != now.getDate()) {
         const zipFile = path.join(
           LoggerMain.OLD_FOLDER,
-          "application-" +
+          'application-' +
             fileDate.getFullYear() +
-            "-" +
-            String(fileDate.getMonth() + 1).padStart(2, "0") +
-            "-" +
-            String(fileDate.getDate()).padStart(2, "0") +
-            ".zip"
+            '-' +
+            String(fileDate.getMonth() + 1).padStart(2, '0') +
+            '-' +
+            String(fileDate.getDate()).padStart(2, '0') +
+            '.zip'
         );
         FileHelper.zipFiles(zipFile, LoggerMain.LOG_FILE)
           .then(() => {
             FileHelper.delete(LoggerMain.LOG_FILE);
-            FileHelper.append(
-              LoggerMain.LOG_FILE,
-              "Rotated log file to " + zipFile + "\n"
-            );
-            console.log("Rotated log file to " + zipFile);
+            FileHelper.append(LoggerMain.LOG_FILE, 'Rotated log file to ' + zipFile + '\n');
+            console.log('Rotated log file to ' + zipFile);
             resolve();
           })
           .catch(() => {
@@ -141,7 +132,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static debug(...args: any): void {
-    LoggerMain.log(LogLevel.DEBUG, "main", ...args);
+    LoggerMain.log(LogLevel.DEBUG, 'main', ...args);
   }
 
   /**
@@ -149,7 +140,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static info(...args: any): void {
-    LoggerMain.log(LogLevel.INFO, "main", ...args);
+    LoggerMain.log(LogLevel.INFO, 'main', ...args);
   }
 
   /**
@@ -157,7 +148,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static warn(...args: any): void {
-    LoggerMain.log(LogLevel.WARN, "main", ...args);
+    LoggerMain.log(LogLevel.WARN, 'main', ...args);
   }
 
   /**
@@ -165,7 +156,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static system(...args: any): void {
-    LoggerMain.log(LogLevel.SYSTEM, "main", ...args);
+    LoggerMain.log(LogLevel.SYSTEM, 'main', ...args);
   }
 
   /**
@@ -173,6 +164,6 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static error(...args: any): void {
-    LoggerMain.log(LogLevel.ERROR, "main", ...args);
+    LoggerMain.log(LogLevel.ERROR, 'main', ...args);
   }
 }

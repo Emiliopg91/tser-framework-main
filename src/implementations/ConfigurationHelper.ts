@@ -1,50 +1,32 @@
-import path from "path";
-import { FileHelper } from "./FileHelper";
-import { JsonUtils } from "@tser-framework/commons";
-import { CryptoHelper } from "./CryptoHelper";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import path from 'path';
+import { FileHelper } from './FileHelper';
+import { JsonUtils } from '@tser-framework/commons';
+import { CryptoHelper } from './CryptoHelper';
 
 export class ConfigurationHelper {
   private constructor() {}
 
-  private static CONFIG_FOLDER: string = path.join(
-    FileHelper.APP_DIR,
-    "config"
-  );
-  private static CONFIG_FILE: string = path.join(
-    ConfigurationHelper.CONFIG_FOLDER,
-    "config.json"
-  );
+  private static CONFIG_FOLDER: string = path.join(FileHelper.APP_DIR, 'config');
+  private static CONFIG_FILE: string = path.join(ConfigurationHelper.CONFIG_FOLDER, 'config.json');
   private static CONFIG_MAP: Record<string, any> = {};
   private static PROXY_HANDLER: ProxyHandler<Record<string, any>> = {
     get(target, key) {
-      if (
-        typeof target[String(key)] === "object" &&
-        target[String(key)] !== null
-      ) {
-        return new Proxy(
-          target[String(key)],
-          ConfigurationHelper.PROXY_HANDLER
-        );
+      if (typeof target[String(key)] === 'object' && target[String(key)] !== null) {
+        return new Proxy(target[String(key)], ConfigurationHelper.PROXY_HANDLER);
       } else {
         return target[String(key)];
       }
     },
-    set: function (
-      target: Record<string, any>,
-      key: string | symbol,
-      value: any
-    ) {
+    set: function (target: Record<string, any>, key: string | symbol, value: any) {
       target[String(key)] = value;
       ConfigurationHelper.persist();
       ConfigurationHelper.notify();
       return true;
-    },
+    }
   };
 
-  private static SUBSCRIPTORS: Record<
-    string,
-    (cfg: Record<string, any>) => void
-  > = {};
+  private static SUBSCRIPTORS: Record<string, (cfg: Record<string, any>) => void> = {};
 
   public static registerForChange(
     callback: (cfg: Record<string, any>) => void,
@@ -57,7 +39,7 @@ export class ConfigurationHelper {
     };
   }
 
-  public static initialize(defaultConfig: Record<string, any> = {}) {
+  public static initialize(defaultConfig: Record<string, any> = {}): void {
     if (!FileHelper.exists(ConfigurationHelper.CONFIG_FOLDER)) {
       FileHelper.mkdir(ConfigurationHelper.CONFIG_FOLDER);
     }
@@ -73,10 +55,7 @@ export class ConfigurationHelper {
   }
 
   public static configAsInterface<T>(): T {
-    return new Proxy(
-      ConfigurationHelper.CONFIG_MAP,
-      ConfigurationHelper.PROXY_HANDLER
-    ) as T;
+    return new Proxy(ConfigurationHelper.CONFIG_MAP, ConfigurationHelper.PROXY_HANDLER) as T;
   }
 
   public static config(): Record<string, any> {
@@ -88,10 +67,7 @@ export class ConfigurationHelper {
   }
 
   public static getSecretValue(key: string): string | undefined {
-    const prop = JsonUtils.getValue<string>(
-      key,
-      ConfigurationHelper.CONFIG_MAP
-    );
+    const prop = JsonUtils.getValue<string>(key, ConfigurationHelper.CONFIG_MAP);
     if (prop) {
       return CryptoHelper.decrypt(prop);
     } else {
@@ -105,16 +81,16 @@ export class ConfigurationHelper {
     ConfigurationHelper.persist();
   }
 
-  private static persist() {
+  private static persist(): void {
     FileHelper.write(
       ConfigurationHelper.CONFIG_FILE,
       JsonUtils.serialize(ConfigurationHelper.CONFIG_MAP)
     );
   }
 
-  private static notify() {
+  private static notify(): void {
     for (const id in ConfigurationHelper.SUBSCRIPTORS) {
-      (async () => {
+      (async (): Promise<void> => {
         ConfigurationHelper.SUBSCRIPTORS[id](ConfigurationHelper.CONFIG_MAP);
       })();
     }

@@ -1,11 +1,7 @@
-import {
-  BrowserWindow,
-  BrowserWindowConstructorOptions,
-  shell,
-} from "electron";
-import { is } from "@electron-toolkit/utils";
-import { join } from "path";
-import { WindowConfig } from "../types/WindowConfig";
+import { BrowserWindow, BrowserWindowConstructorOptions, shell } from 'electron';
+import { is } from '@electron-toolkit/utils';
+import { join } from 'path';
+import { WindowConfig } from '../types/WindowConfig';
 
 export class WindowHelper {
   public static createWindow(
@@ -16,30 +12,27 @@ export class WindowHelper {
 
     window.webContents.setWindowOpenHandler((details) => {
       shell.openExternal(details.url);
-      return { action: "deny" };
+      return { action: 'deny' };
     });
 
-    if (is.dev && process.env["ELECTRON_RENDERER_URL"]) {
-      window.loadURL(process.env["ELECTRON_RENDERER_URL"] + "/" + file);
+    if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+      window.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/' + file);
     } else {
-      window.loadFile(join(__dirname, "../renderer/" + file));
+      window.loadFile(join(__dirname, '../renderer/' + file));
     }
 
     window.webContents.setWindowOpenHandler((details) => {
       shell.openExternal(details.url);
-      return { action: "deny" };
+      return { action: 'deny' };
     });
 
     return window;
   }
 
   public static createMainWindow(windowConfig: WindowConfig): BrowserWindow {
-    const mainWindow = this.createWindow(
-      "index.html",
-      windowConfig.constructorOptions
-    );
+    const mainWindow = this.createWindow('index.html', windowConfig.constructorOptions);
 
-    mainWindow.on("ready-to-show", () => {
+    mainWindow.on('ready-to-show', () => {
       mainWindow?.maximize();
       mainWindow?.show();
       if (is.dev) {
@@ -48,7 +41,7 @@ export class WindowHelper {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mainWindow.on("minimize", function (event: any) {
+    mainWindow.on('minimize', function (event: any) {
       if (windowConfig.minimizeToTray) {
         event.preventDefault();
         mainWindow?.hide();
@@ -65,10 +58,7 @@ export class WindowHelper {
   ): Promise<void> {
     return new Promise<void>((resolve) => {
       if (!is.dev || forceDev) {
-        const splash = this.createWindow(
-          "splash.html",
-          windowConstructorOption
-        );
+        const splash = this.createWindow('splash.html', windowConstructorOption);
         splash.show();
         splash.center();
 

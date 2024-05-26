@@ -1,3 +1,3 @@
 export interface DeepLinkBinding {
-    handler: (uri: string) => void;
-  }
+  handler: (uri: string) => void;
+}

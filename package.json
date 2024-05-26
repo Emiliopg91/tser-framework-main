@@ -7,11 +7,13 @@
   "module": "dist/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "shx rm -rf dist && tsc -b",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "build": "pnpm lint && pnpm format && shx rm -rf dist && tsc -b",
     "dev": "tsc -b -w",
     "docs": "typedoc --theme wiki-js --tsconfig ./tsconfig.json src/**/*",
     "test": "echo 'No tests for now!'",
-    "release": "npm version patch && pnpm run build && npm publish && git push --tags"
+    "release": "pnpm run build && npm version patch && npm publish && git push --tags"
   },
   "author": "Emiliopg91",
   "license": "LGPL-2.1",
@@ -28,14 +30,12 @@
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
-    "@electron-toolkit/eslint-config-ts": "^1.0.1",
+    "@electron-toolkit/eslint-config-ts": "^2.0.0",
     "@electron-toolkit/utils": "^3.0.0",
     "@tser-framework/commons": "latest",
     "@types/archiver": "^6.0.2",
     "async-mutex": "^0.5.0",
     "electron": "^28.3.3",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.1",
     "prettier": "^3.2.5",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"

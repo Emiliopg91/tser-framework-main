@@ -1,8 +1,9 @@
-import { app, shell } from "electron";
-import * as fs from "fs";
-import path from "path";
-import archiver from "archiver";
-import { OSHelper } from "./OSHelper";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { app, shell } from 'electron';
+import * as fs from 'fs';
+import path from 'path';
+import archiver from 'archiver';
+import { OSHelper } from './OSHelper';
 
 export class FileHelper {
   private constructor() {}
@@ -20,13 +21,13 @@ export class FileHelper {
       result =
         process.resourcesPath +
         path.sep +
-        "resources" +
+        'resources' +
         path.sep +
-        "app.asar.unpacked" +
+        'app.asar.unpacked' +
         path.sep +
-        "resources";
+        'resources';
     } else {
-      result = app.getAppPath() + path.sep + "resources";
+      result = app.getAppPath() + path.sep + 'resources';
     }
 
     return result;
@@ -57,7 +58,7 @@ export class FileHelper {
   }
 
   public static asarPathToAbsolute(filePath: string): string {
-    return filePath.replace(".asar" + path.sep, ".asar.unpacked" + path.sep);
+    return filePath.replace('.asar' + path.sep, '.asar.unpacked' + path.sep);
   }
 
   public static findFile(fileName: string, dir: string): Array<string> {
@@ -84,20 +85,19 @@ export class FileHelper {
   public static zipFiles(file: string, ...args: Array<string>): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const output = fs.createWriteStream(file);
-      const archive = archiver("zip", {
-        zlib: { level: 9 }, // Sets the compression level.
+      const archive = archiver('zip', {
+        zlib: { level: 9 } // Sets the compression level.
       });
 
-      archive.on("warning", function (err: any) {
-        if (err.code === "ENOENT") {
-        } else {
+      archive.on('warning', function (err: any) {
+        if (err.code != 'ENOENT') {
           reject(err);
           throw err;
         }
       });
 
       // good practice to catch this error explicitly
-      archive.on("error", function (err: any) {
+      archive.on('error', function (err: any) {
         reject(err);
         throw err;
       });
@@ -105,7 +105,7 @@ export class FileHelper {
       archive.pipe(output);
       args.forEach((f) => {
         archive.append(fs.createReadStream(f), {
-          name: f.substring(f.lastIndexOf(path.sep) + 1),
+          name: f.substring(f.lastIndexOf(path.sep) + 1)
         });
       });
       archive.finalize().then(() => {

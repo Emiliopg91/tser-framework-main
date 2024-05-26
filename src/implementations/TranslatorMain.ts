@@ -15,24 +15,20 @@ export class TranslatorMain {
   /**
    * Default language
    */
-  private static defLang: string = "en";
+  private static defLang: string = 'en';
 
   /**
    * Current language
    */
-  private static curLang: string = "en";
+  private static curLang: string = 'en';
 
   /**
    * Method to set up the translator. It retrieves the current language from the SteamClient.Settings,
    * logs the language, and sets the currDictionary to the dictionary of the current language.
    * If the current language is not English and no translation is available, it falls back to English.
    */
-  public static initialize(
-    translations: Record<string, Record<string, string>>
-  ) {
-    TranslatorMain.curLang = Intl.DateTimeFormat()
-      .resolvedOptions()
-      .locale.substring(0, 2);
+  public static initialize(translations: Record<string, Record<string, string>>): void {
+    TranslatorMain.curLang = Intl.DateTimeFormat().resolvedOptions().locale.substring(0, 2);
     TranslatorMain.dictionary = translations;
   }
 
@@ -42,13 +38,11 @@ export class TranslatorMain {
    * @param replacements - An object that contains key-value pairs to replace in the text
    * @returns The translated text. If a translation for a text is not found in the current dictionary, the original text is returned.
    */
-  public static translate(key: string, replacements: Record<string, any> = {}) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public static translate(key: string, replacements: Record<string, any> = {}): string {
     let result: string = key;
 
-    if (
-      TranslatorMain.dictionary[key] !== null &&
-      TranslatorMain.dictionary[key] !== undefined
-    ) {
+    if (TranslatorMain.dictionary[key] !== null && TranslatorMain.dictionary[key] !== undefined) {
       const keyEntry = TranslatorMain.dictionary[key];
       if (
         keyEntry[TranslatorMain.curLang] !== null &&

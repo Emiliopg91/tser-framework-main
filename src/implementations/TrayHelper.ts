@@ -1,7 +1,7 @@
-import { Menu, MenuItemConstructorOptions, Tray, nativeImage } from "electron";
-import { JsonUtils } from "@tser-framework/commons";
-import { LoggerMain } from "./LoggerMain";
-import { TranslatorMain } from "./TranslatorMain";
+import { Menu, MenuItemConstructorOptions, Tray, nativeImage } from 'electron';
+import { JsonUtils } from '@tser-framework/commons';
+import { LoggerMain } from './LoggerMain';
+import { TranslatorMain } from './TranslatorMain';
 
 export class TrayBuilder {
   private iconPath: string;
@@ -34,19 +34,15 @@ export class TrayBuilder {
       }
 
       if (this.contextMenu) {
-        const menu = JsonUtils.modifyObject(
-          this.contextMenu,
-          ["label"],
-          (_, value: unknown) => {
-            return TranslatorMain.translate(value as string);
-          }
-        );
+        const menu = JsonUtils.modifyObject(this.contextMenu, ['label'], (_, value: unknown) => {
+          return TranslatorMain.translate(value as string);
+        });
         tray.setContextMenu(Menu.buildFromTemplate(menu));
       }
 
       return tray;
     } catch (error) {
-      LoggerMain.error("Error creating tray icon", error);
+      LoggerMain.error('Error creating tray icon', error);
       throw error;
     }
   }
