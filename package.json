@@ -13,7 +13,7 @@
     "dev": "tsc -b -w",
     "docs": "typedoc --theme wiki-js --tsconfig ./tsconfig.json src/**/*",
     "test": "echo 'No tests for now!'",
-    "release": "pnpm run build && npm version patch && npm publish && git push --tags"
+    "release": "pnpm build && npm version patch && npm publish && git push --tags"
   },
   "author": "Emiliopg91",
   "license": "LGPL-2.1",
