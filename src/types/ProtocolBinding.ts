@@ -1,6 +1,8 @@
 import { Privileges, net } from 'electron';
-import { OSHelper } from '../implementations/OSHelper';
+
 import url from 'url';
+
+import { OSHelper } from '../implementations/OSHelper';
 
 export interface ProtocolBinding {
   privileges: Privileges;

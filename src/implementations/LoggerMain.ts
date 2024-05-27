@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DefaulLevel, LogLevel, loggerArgsToString } from '@tser-framework/commons';
-import { FileHelper } from './FileHelper';
-import path from 'path';
 import { Mutex } from 'async-mutex';
+import path from 'path';
+import { FileHelper } from './FileHelper';
 
 /**
  * Represents a logging utility for frontend.

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import path from 'path';
-import { FileHelper } from './FileHelper';
 import { JsonUtils } from '@tser-framework/commons';
+import path from 'path';
+
 import { CryptoHelper } from './CryptoHelper';
+import { FileHelper } from './FileHelper';
 
 export class ConfigurationHelper {
   private constructor() {}

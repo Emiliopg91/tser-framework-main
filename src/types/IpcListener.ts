@@ -1,5 +1,3 @@
-import { IpcMainInvokeEvent } from 'electron';
-import { LoggerMain } from '../implementations/LoggerMain';
 import {
   JsonUtils,
   LogLevel,
@@ -7,8 +5,10 @@ import {
   RestClientRequest,
   RestClientResponse
 } from '@tser-framework/commons';
-import { RestClientMain } from '../implementations/RestClientMain';
+import { IpcMainInvokeEvent } from 'electron';
 import { ConfigurationHelper } from '../implementations/ConfigurationHelper';
+import { LoggerMain } from '../implementations/LoggerMain';
+import { RestClientMain } from '../implementations/RestClientMain';
 
 export interface IpcListener {
   sync: boolean;
