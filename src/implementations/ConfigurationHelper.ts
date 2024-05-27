@@ -8,8 +8,8 @@ import { FileHelper } from './FileHelper';
 export class ConfigurationHelper {
   private constructor() {}
 
-  private static CONFIG_FOLDER: string = path.join(FileHelper.APP_DIR, 'config');
-  private static CONFIG_FILE: string = path.join(ConfigurationHelper.CONFIG_FOLDER, 'config.json');
+  public static CONFIG_FOLDER: string = path.join(FileHelper.APP_DIR, 'config');
+  public static CONFIG_FILE: string = path.join(ConfigurationHelper.CONFIG_FOLDER, 'config.json');
   private static CONFIG_MAP: Record<string, any> = {};
   private static PROXY_HANDLER: ProxyHandler<Record<string, any>> = {
     get(target, key) {
