@@ -58,6 +58,10 @@ export class FileHelper {
     fs.writeFileSync(path, data);
   }
 
+  public static copy(src: string, dst: string): void {
+    fs.copyFileSync(src, dst);
+  }
+
   public static asarPathToAbsolute(filePath: string): string {
     return filePath.replace('.asar' + path.sep, '.asar.unpacked' + path.sep);
   }
