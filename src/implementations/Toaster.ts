@@ -1,4 +1,5 @@
 import { Notification, app } from 'electron';
+
 import { OSHelper } from './OSHelper';
 
 export class Toaster {

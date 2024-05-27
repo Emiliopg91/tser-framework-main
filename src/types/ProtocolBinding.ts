@@ -1,5 +1,4 @@
 import { Privileges, net } from 'electron';
-
 import url from 'url';
 
 import { OSHelper } from '../implementations/OSHelper';

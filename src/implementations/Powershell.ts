@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { spawn } from 'child_process';
+
 import { LoggerMain } from './LoggerMain';
 
 interface Entry {

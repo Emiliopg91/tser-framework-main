@@ -3,6 +3,7 @@ import archiver from 'archiver';
 import { app, shell } from 'electron';
 import * as fs from 'fs';
 import path from 'path';
+
 import { OSHelper } from './OSHelper';
 
 export class FileHelper {
