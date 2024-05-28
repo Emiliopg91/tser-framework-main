@@ -131,6 +131,10 @@ export class FileHelper {
     return fs.statSync(path).isDirectory();
   }
 
+  public static getName(pathD: string): string {
+    return pathD.substring(pathD.lastIndexOf(path.sep) + 1);
+  }
+
   public static walkFileTree(
     pathF: string,
     preVisitDir?: (path: string) => FileTreeAction,
