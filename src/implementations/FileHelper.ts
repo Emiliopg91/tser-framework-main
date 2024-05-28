@@ -38,7 +38,7 @@ export class FileHelper {
     return fs.existsSync(path);
   }
 
-  public static mkdir(path: string, recursive: boolean = false): void {
+  public static mkdir(path: string, recursive: boolean = true): void {
     fs.mkdirSync(path, { recursive: recursive });
   }
 
