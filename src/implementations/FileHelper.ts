@@ -132,15 +132,16 @@ export class FileHelper {
   }
 
   public static walkFileTree(
-    path: string,
+    pathF: string,
     preVisitDir?: (path: string) => FileTreeAction,
     postVisitDir?: (path: string) => void,
     visitFile?: (path: string) => void
   ): void {
     let action = FileTreeAction.CONTINUE;
 
-    const files = FileHelper.list(path);
-    for (const file of files) {
+    const files = FileHelper.list(pathF);
+    for (const entry of files) {
+      const file = path.join(pathF, entry);
       if (FileHelper.isDirectory(file)) {
         if (preVisitDir) {
           action = preVisitDir(file);
