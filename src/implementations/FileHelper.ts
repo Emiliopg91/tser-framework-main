@@ -87,6 +87,10 @@ export class FileHelper {
     return fs.statSync(path).mtimeMs;
   }
 
+  public static setLastModified(path: string, date: number): void {
+    fs.utimesSync(path, date, date);
+  }
+
   public static zipFiles(file: string, ...args: Array<string>): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const output = fs.createWriteStream(file);
