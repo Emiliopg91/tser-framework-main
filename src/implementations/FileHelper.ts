@@ -122,4 +122,45 @@ export class FileHelper {
       });
     });
   }
+
+  public static list(path: string): Array<string> {
+    return fs.readdirSync(path);
+  }
+
+  public static isDirectory(path: string): boolean {
+    return fs.statSync(path).isDirectory();
+  }
+
+  public static walkFileTree(
+    path: string,
+    preVisitDir?: (path: string) => FileTreeAction,
+    postVisitDir?: (path: string) => void,
+    visitFile?: (path: string) => void
+  ): void {
+    let action = FileTreeAction.CONTINUE;
+
+    const files = FileHelper.list(path);
+    for (const file of files) {
+      if (FileHelper.isDirectory(file)) {
+        if (preVisitDir) {
+          action = preVisitDir(file);
+        }
+        if (action == FileTreeAction.CONTINUE) {
+          FileHelper.walkFileTree(file, preVisitDir, postVisitDir, visitFile);
+          if (postVisitDir) {
+            postVisitDir(file);
+          }
+        }
+      } else {
+        if (visitFile) {
+          visitFile(file);
+        }
+      }
+    }
+  }
+}
+
+export enum FileTreeAction {
+  CONTINUE,
+  SKIP_SUBTREE
 }
