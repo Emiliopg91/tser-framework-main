@@ -88,7 +88,7 @@ export class FileHelper {
   }
 
   public static setLastModified(path: string, date: number): void {
-    fs.utimesSync(path, date, date);
+    fs.utimesSync(path, new Date(date), new Date(date));
   }
 
   public static zipFiles(file: string, ...args: Array<string>): Promise<void> {
