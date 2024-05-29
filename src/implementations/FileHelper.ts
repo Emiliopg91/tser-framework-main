@@ -84,7 +84,7 @@ export class FileHelper {
   }
 
   public static getLastModified(path: string): number {
-    return fs.statSync(path).mtimeMs;
+    return Math.trunc(fs.statSync(path).mtimeMs);
   }
 
   public static setLastModified(path: string, date: number): void {
