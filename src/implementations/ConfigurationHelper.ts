@@ -24,6 +24,12 @@ export class ConfigurationHelper {
       ConfigurationHelper.persist();
       ConfigurationHelper.notify();
       return true;
+    },
+    deleteProperty(target, key: string | symbol): boolean {
+      delete target[String(key)];
+      ConfigurationHelper.persist();
+      ConfigurationHelper.notify();
+      return true;
     }
   };
 
