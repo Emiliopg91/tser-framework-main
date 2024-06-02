@@ -26,7 +26,7 @@ export class ConfigurationHelper {
       return true;
     },
     deleteProperty(target, key: string | symbol): boolean {
-      delete target[String(key)];
+      target[String(key)] = undefined;
       ConfigurationHelper.persist();
       ConfigurationHelper.notify();
       return true;
