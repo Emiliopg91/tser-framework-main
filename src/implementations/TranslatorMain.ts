@@ -57,10 +57,9 @@ export class TranslatorMain {
           result = keyEntry[TranslatorMain.defLang];
         }
       }
-      for (const key in replacements) {
-        const placeholder = `{{${key}}}`;
-        result = result.split(placeholder).join(replacements[key]);
-      }
+      Object.keys(replacements).forEach((key) => {
+        result = result.split('{' + key + '}').join(replacements[key]);
+      });
     }
 
     return result;
