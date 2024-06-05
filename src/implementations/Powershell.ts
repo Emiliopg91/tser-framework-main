@@ -23,7 +23,7 @@ export class Powershell {
 
         if (!Powershell.READY) {
           if (lines[lines.length - 1].startsWith('PS ')) {
-            LoggerMain.system('Powershell ready');
+            LoggerMain.debug('Powershell ready');
             Powershell.READY = true;
             resolve();
           }
