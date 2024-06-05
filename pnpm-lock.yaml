@@ -3,7 +3,7 @@ lockfileVersion: '6.0'
 dependencies:
   '@tser-framework/commons':
     specifier: latest
-    version: 2.0.30
+    version: 2.0.31
   archiver:
     specifier: ^7.0.1
     version: 7.0.1
@@ -19,6 +19,9 @@ dependencies:
   electron-builder:
     specifier: ^24.13.3
     version: 24.13.3(electron-builder-squirrel-windows@24.13.3)
+  electron-log:
+    specifier: ^5.1.5
+    version: 5.1.5
   electron-vite:
     specifier: ^2.2.0
     version: 2.2.0(vite@5.2.11)
@@ -1135,8 +1138,8 @@ packages:
       - supports-color
     dev: true
 
-  /@tser-framework/commons@2.0.30:
-    resolution: {integrity: sha512-bCmAnrMM3/s3k7r72HjTYv08DhXXU422rwGgpsm62tMCu8reqOjYH4z7u1urKxwDzOxOfmKhW4m3bGxTfbvDhQ==}
+  /@tser-framework/commons@2.0.31:
+    resolution: {integrity: sha512-GVE0tOm99wCRCAZtRIDM0GGOKtS+PnNf1ZpoYCFYF160WWXpcpDe1KCXfrYmNa3INt3YGYMxPxnLB9Htkr4czA==}
     dev: false
 
   /@types/archiver@6.0.2:
@@ -2095,6 +2098,11 @@ packages:
     transitivePeerDependencies:
       - electron-builder-squirrel-windows
       - supports-color
+    dev: false
+
+  /electron-log@5.1.5:
+    resolution: {integrity: sha512-vuq10faUAxRbILgQx7yHoMObKZDEfj7hMSZrJPsVrDNeCpV/HN11dU7QuY4UDUe055pzBxhSCB3m0+6D3Aktjw==}
+    engines: {node: '>= 14'}
     dev: false
 
   /electron-publish@24.13.1:

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DefaulLevel, LogLevel, loggerArgsToString } from '@tser-framework/commons';
 import { Mutex } from 'async-mutex';
+import log from 'electron-log/main';
 import path from 'path';
 
 import { FileHelper } from './FileHelper';
@@ -34,6 +35,11 @@ export class LoggerMain {
     if (!FileHelper.exists(LoggerMain.OLD_FOLDER)) {
       FileHelper.mkdir(LoggerMain.OLD_FOLDER, true);
     }
+
+    log.transports.console.level = 'info';
+    log.transports.file.resolvePathFn = (): string =>
+      path.join(LoggerMain.LOG_FOLDER, 'system.log');
+    log.transports.file.level = 'info';
 
     console.log('Logger writing to file ' + LoggerMain.LOG_FILE);
 
