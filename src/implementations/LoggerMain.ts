@@ -13,7 +13,7 @@ export class LoggerMain {
 
   private static MUTEX: Mutex = new Mutex();
 
-  private static LOG_FOLDER = path.join(FileHelper.APP_DIR, 'logs');
+  public static LOG_FOLDER = path.join(FileHelper.APP_DIR, 'logs');
   private static OLD_FOLDER = path.join(LoggerMain.LOG_FOLDER, 'old');
   public static LOG_FILE = path.join(LoggerMain.LOG_FOLDER, 'application.log');
 
