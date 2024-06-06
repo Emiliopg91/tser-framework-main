@@ -1,5 +1,4 @@
 import * as os from 'os';
-import si from 'systeminformation';
 
 export class OSHelper {
   private constructor() {}
