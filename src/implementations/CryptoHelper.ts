@@ -20,7 +20,7 @@ export class CryptoHelper {
       if (data.startsWith(CryptoHelper.PREFIX_ENC + CryptoHelper.PREFIX_SSE)) {
         return CryptoHelper.decryptSafeStorage(data);
       } else if (data.startsWith(CryptoHelper.PREFIX_ENC + CryptoHelper.PREFIX_C4U)) {
-        return CryptoHelper.decryptSafeStorage(data);
+        return CryptoHelper.decryptForUser(data);
       } else {
         throw new Error('Unrecognized ' + data.substring(5, 10) + ' encription');
       }
