@@ -47,14 +47,14 @@ export class CryptoHelper {
       Buffer.from(data).toString('base64');
     return (
       CryptoHelper.PREFIX_ENC +
-      CryptoHelper.PREFIX_SSE +
+      CryptoHelper.PREFIX_C4U +
       safeStorage.encryptString(dataToCipher).toString('hex').split('').reverse().join('')
     );
   }
 
   public static decryptForUser(data: string): string {
     CryptoHelper.checkCipher();
-    if (data.startsWith(CryptoHelper.PREFIX_ENC + CryptoHelper.PREFIX_SSE)) {
+    if (data.startsWith(CryptoHelper.PREFIX_ENC + CryptoHelper.PREFIX_C4U)) {
       const dec = safeStorage.decryptString(
         Buffer.from(data.substring(10).split('').reverse().join(''), 'hex')
       );
