@@ -1,4 +1,5 @@
 import * as os from 'os';
+import si from 'systeminformation';
 
 export class OSHelper {
   private constructor() {}
@@ -17,5 +18,9 @@ export class OSHelper {
 
   public static isMacOS(): boolean {
     return process.platform === 'darwin';
+  }
+
+  public static getUsername(): string {
+    return os.userInfo().username;
   }
 }
