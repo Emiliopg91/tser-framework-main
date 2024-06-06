@@ -14,18 +14,14 @@ export class Toaster {
     if (OSHelper.isWindows()) {
       if (icon) {
         toastXml =
-          "<toast><visual><binding template='ToastImageAndText02'><image id='1' src='" +
+          "<toast><visual><binding template='ToastImageAndText01'><image id='1' src='" +
           icon +
           "'/><text id='1'>" +
-          app.name +
-          "</text><text id='2'>" +
           body +
           '</text></binding></visual></toast>';
       } else {
         toastXml =
-          "<toast><visual><binding template='ToastText02'><text id='1'>" +
-          app.name +
-          "</text><text id='2'>" +
+          "<toast><visual><binding template='ToastText01'><text id='1'>" +
           body +
           '</text></binding></visual></toast>';
       }
