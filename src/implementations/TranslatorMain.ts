@@ -28,9 +28,7 @@ export class TranslatorMain {
    * If the current language is not English and no translation is available, it falls back to English.
    */
   public static initialize(translations: Record<string, Record<string, string>>): void {
-    TranslatorMain.curLang = process.env.LANG
-      ? process.env.LANG
-      : Intl.DateTimeFormat().resolvedOptions().locale.substring(0, 2);
+    TranslatorMain.curLang = Intl.DateTimeFormat().resolvedOptions().locale.substring(0, 2);
     TranslatorMain.dictionary = translations;
   }
 
