@@ -1,6 +1,6 @@
 {
   "name": "@tser-framework/main",
-  "version": "2.0.145",
+  "version": "2.0.146",
   "description": "TypeScript Electron React framework",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
