@@ -7,6 +7,12 @@ import path from 'path';
 
 import { FileHelper } from './FileHelper';
 
+declare module 'electron-log' {
+  interface LogFunctions {
+    system(...params: any[]): void;
+  }
+}
+
 /**
  * Represents a logging utility for frontend.
  */
@@ -42,6 +48,7 @@ export class LoggerMain {
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
     LoggerMain.CURRENT_LEVEL = LogLevel[level as keyof typeof LogLevel];
 
+    log.addLevel('system', 2);
     log.default.scope.defaultLabel = 'system'.padEnd(8, ' ');
 
     log.transports.file.resolvePathFn = (): string => LoggerMain.LOG_FILE;
@@ -89,8 +96,10 @@ export class LoggerMain {
               logger.debug(logEntry);
               break;
             case LogLevel.INFO:
-            case LogLevel.SYSTEM:
               logger.info(logEntry);
+              break;
+            case LogLevel.SYSTEM:
+              logger.system(logEntry);
               break;
             case LogLevel.WARN:
               logger.warn(logEntry);
@@ -171,7 +180,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static system(...args: any): void {
-    LoggerMain.log(LogLevel.SYSTEM, 'system', ...args);
+    LoggerMain.log(LogLevel.SYSTEM, 'main', ...args);
   }
 
   /**
