@@ -50,6 +50,12 @@ export class LoggerMain {
 
     log.transports.console.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
     log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} > {text}';
+
+    console.debug = LoggerMain.debug;
+    console.info = LoggerMain.info;
+    console.log = LoggerMain.info;
+    console.warn = LoggerMain.warn;
+    console.error = LoggerMain.error;
   }
 
   public static addTab(): void {
