@@ -44,7 +44,10 @@ export class LoggerMain {
 
     log.transports.file.resolvePathFn = (): string => LoggerMain.LOG_FILE;
     log.transports.file.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
+    log.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} > {text}';
+
     log.transports.console.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
+    log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} > {text}';
   }
 
   public static addTab(): void {
@@ -68,10 +71,10 @@ export class LoggerMain {
    */
   public static log(lvl: LogLevel, category: string, ...args: any): void {
     LoggerMain.MUTEX.acquire().then((release) => {
-      LoggerMain.archiveLogFile().then(() => {
+      LoggerMain.archiveLogFile().then(async () => {
         if (LoggerMain.isLevelEnabled(lvl)) {
           const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
-          const logEntry = ` - ${tabs}${loggerArgsToString(...args)}`;
+          const logEntry = `${tabs}${loggerArgsToString(...args)}`;
           const logger = log.scope(category);
           switch (lvl) {
             case LogLevel.DEBUG:
@@ -114,7 +117,7 @@ export class LoggerMain {
             .then(() => {
               FileHelper.delete(LoggerMain.LOG_FILE);
               FileHelper.append(LoggerMain.LOG_FILE, 'Rotated log file to ' + zipFile + '\n');
-              console.log('Rotated log file to ' + zipFile);
+              LoggerMain.info('Rotated log file to ' + zipFile);
               resolve();
             })
             .catch(() => {
