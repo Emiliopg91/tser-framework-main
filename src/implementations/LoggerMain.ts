@@ -42,6 +42,8 @@ export class LoggerMain {
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
     LoggerMain.CURRENT_LEVEL = LogLevel[level as keyof typeof LogLevel];
 
+    log.default.scope.defaultLabel = 'system'.padEnd(8, ' ');
+
     log.transports.file.resolvePathFn = (): string => LoggerMain.LOG_FILE;
     log.transports.file.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
     log.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} > {text}';
@@ -75,7 +77,7 @@ export class LoggerMain {
         if (LoggerMain.isLevelEnabled(lvl)) {
           const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
           const logEntry = `${tabs}${loggerArgsToString(...args)}`;
-          const logger = log.scope(category);
+          const logger = log.scope(category.padEnd(8, ' '));
           switch (lvl) {
             case LogLevel.DEBUG:
               logger.debug(logEntry);
