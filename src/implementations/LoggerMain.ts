@@ -12,6 +12,11 @@ declare module 'electron-log' {
     system(...params: any[]): void;
   }
 }
+declare global {
+  interface Console {
+    system(...params: any[]): void;
+  }
+}
 
 /**
  * Represents a logging utility for frontend.
@@ -63,6 +68,7 @@ export class LoggerMain {
     console.log = LoggerMain.info;
     console.warn = LoggerMain.warn;
     console.error = LoggerMain.error;
+    console.system = LoggerMain.system;
   }
 
   public static addTab(): void {
