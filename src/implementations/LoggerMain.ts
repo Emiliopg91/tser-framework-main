@@ -83,12 +83,15 @@ export class LoggerMain {
         if (LoggerMain.isLevelEnabled(lvl)) {
           const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
           const logEntry = `${tabs}${loggerArgsToString(...args)}`;
-          const logger = log.scope(category.padEnd(8, ' '));
+          const logger = log.scope((lvl == LogLevel.SYSTEM ? 'system' : category).padEnd(8, ' '));
           switch (lvl) {
             case LogLevel.DEBUG:
               logger.debug(logEntry);
               break;
             case LogLevel.INFO:
+              logger.info(logEntry);
+              break;
+            case LogLevel.SYSTEM:
               logger.info(logEntry);
               break;
             case LogLevel.WARN:
@@ -163,6 +166,14 @@ export class LoggerMain {
    */
   public static info(...args: any): void {
     LoggerMain.log(LogLevel.INFO, 'main', ...args);
+  }
+
+  /**
+   * Logs a system message.
+   * @param args - The message arguments.
+   */
+  public static system(...args: any): void {
+    LoggerMain.log(LogLevel.SYSTEM, 'main', ...args);
   }
 
   /**
