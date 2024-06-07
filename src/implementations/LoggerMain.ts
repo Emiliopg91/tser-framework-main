@@ -14,6 +14,9 @@ declare module 'electron-log' {
 }
 declare global {
   interface Console {
+    logFile(): string;
+    addTab(): void;
+    removeTab(): void;
     system(...params: any[]): void;
   }
 }
@@ -63,6 +66,11 @@ export class LoggerMain {
     log.transports.console.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
     log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} > {text}';
 
+    console.logFile = (): string => {
+      return LoggerMain.LOG_FILE;
+    };
+    console.addTab = LoggerMain.addTab;
+    console.removeTab = LoggerMain.removeTab;
     console.debug = LoggerMain.debug;
     console.info = LoggerMain.info;
     console.log = LoggerMain.info;
