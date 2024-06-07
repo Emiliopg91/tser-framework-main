@@ -46,8 +46,15 @@ export class FileHelper {
     fs.appendFileSync(path, data);
   }
 
-  public static delete(path: string): void {
-    fs.rmSync(path);
+  public static delete(pathD: string): void {
+    if (FileHelper.isDirectory(pathD)) {
+      FileHelper.list(pathD).forEach((f) => {
+        FileHelper.delete(path.join(pathD, f));
+      });
+      fs.rmdirSync(pathD);
+    } else {
+      fs.rmSync(pathD);
+    }
   }
 
   public static read(path: string): string {
