@@ -49,7 +49,7 @@ export class LoggerMain {
     LoggerMain.CURRENT_LEVEL = LogLevel[level as keyof typeof LogLevel];
 
     log.addLevel('system', 2);
-    log.default.scope.defaultLabel = 'system'.padEnd(8, ' ');
+    log.default.scope.defaultLabel = 'electron';
 
     log.transports.file.resolvePathFn = (): string => LoggerMain.LOG_FILE;
     log.transports.file.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
