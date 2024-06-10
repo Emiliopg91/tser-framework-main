@@ -90,7 +90,8 @@ export class File {
 
   public delete(): void {
     if (this.isDirectory()) {
-      if (this.list().length == 0) fs.rmdirSync(this.getAbsolutePath());
+      this.list().forEach((f) => f.delete());
+      fs.rmdirSync(this.getAbsolutePath());
     } else {
       fs.rmSync(this.getAbsolutePath());
     }

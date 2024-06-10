@@ -7,9 +7,6 @@ export class Path {
 
   constructor(node: string) {
     this.node = node.split('/').join(path.sep);
-    if (!path.isAbsolute(this.node)) {
-      this.node = path.resolve(__dirname, this.node);
-    }
   }
 
   public resolve(relative: string): Path {
