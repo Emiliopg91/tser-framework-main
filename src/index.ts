@@ -1,9 +1,10 @@
 export { ConfigurationHelper } from './implementations/ConfigurationHelper';
 export { CryptoHelper } from './implementations/CryptoHelper';
-export { File } from './implementations/File';
+export { File, FileTreeAction, FileParameters } from './implementations/File';
 export { FileHelper } from './implementations/FileHelper';
 export { LoggerMain } from './implementations/LoggerMain';
 export { OSHelper } from './implementations/OSHelper';
+export { Path } from './implementations/Path';
 export { Powershell } from './implementations/Powershell';
 export { RestClientMain as RestClient } from './implementations/RestClientMain';
 export { Toaster } from './implementations/Toaster';
