@@ -6,6 +6,7 @@ import { Path } from './Path';
 export interface FileParameters {
   file: string;
   parentPath?: Path;
+  parentFile?: File;
   parent?: string;
 }
 
@@ -14,8 +15,13 @@ export class File {
   private parent: Path;
 
   public constructor(params: FileParameters) {
+    params.file = params.file.split('/').join(path.sep);
     if (params.parent) {
       params.parentPath = new Path(params.parent);
+    } else {
+      if (params.parentFile) {
+        params.parentPath = params.parentFile.toPath();
+      }
     }
 
     if (params.parentPath) {
@@ -39,7 +45,11 @@ export class File {
   }
 
   public toString(): string {
-    return JSON.stringify(this);
+    return this.getAbsolutePath();
+  }
+
+  public toPath(): Path {
+    return new Path(this.getAbsolutePath());
   }
 
   public getName(): string {
