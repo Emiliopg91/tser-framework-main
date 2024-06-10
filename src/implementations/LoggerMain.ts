@@ -5,6 +5,7 @@ import { LogLevel as ELogLevel } from 'electron-log';
 import log from 'electron-log/main';
 import path from 'path';
 
+import { File } from './File';
 import { FileHelper } from './FileHelper';
 
 declare module 'electron-log' {
@@ -44,11 +45,11 @@ export class LoggerMain {
    * Initializes the LoggerMain.
    */
   public static async initialize(): Promise<void> {
-    if (!FileHelper.exists(LoggerMain.LOG_FOLDER)) {
-      FileHelper.mkdir(LoggerMain.LOG_FOLDER, true);
+    if (!new File({ file: LoggerMain.LOG_FOLDER }).exists()) {
+      new File({ file: LoggerMain.LOG_FOLDER }).mkdir;
     }
-    if (!FileHelper.exists(LoggerMain.OLD_FOLDER)) {
-      FileHelper.mkdir(LoggerMain.OLD_FOLDER, true);
+    if (!new File({ file: LoggerMain.OLD_FOLDER }).exists()) {
+      new File({ file: LoggerMain.OLD_FOLDER }).mkdir();
     }
 
     console.log('Logger writing to file ' + LoggerMain.LOG_FILE);
@@ -130,8 +131,8 @@ export class LoggerMain {
 
   private static archiveLogFile(): Promise<void> {
     return new Promise<void>((resolve) => {
-      if (FileHelper.exists(LoggerMain.LOG_FILE)) {
-        const fileDate = new Date(FileHelper.getLastModified(LoggerMain.LOG_FILE));
+      if (new File({ file: LoggerMain.LOG_FILE }).exists()) {
+        const fileDate = new Date(new File({ file: LoggerMain.LOG_FILE }).getLastModified());
         const now = new Date();
 
         if (fileDate.getDate() != now.getDate()) {
@@ -147,7 +148,7 @@ export class LoggerMain {
           );
           FileHelper.zipFiles(zipFile, LoggerMain.LOG_FILE)
             .then(() => {
-              FileHelper.delete(LoggerMain.LOG_FILE);
+              new File({ file: LoggerMain.LOG_FILE }).delete();
               FileHelper.append(LoggerMain.LOG_FILE, 'Rotated log file to ' + zipFile + '\n');
               LoggerMain.info('Rotated log file to ' + zipFile);
               resolve();

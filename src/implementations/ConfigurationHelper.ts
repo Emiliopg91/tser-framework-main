@@ -3,6 +3,7 @@ import { JsonUtils } from '@tser-framework/commons';
 import path from 'path';
 
 import { CryptoHelper } from './CryptoHelper';
+import { File } from './File';
 import { FileHelper } from './FileHelper';
 
 export class ConfigurationHelper {
@@ -47,11 +48,11 @@ export class ConfigurationHelper {
   }
 
   public static initialize(defaultConfig: Record<string, any> = {}): void {
-    if (!FileHelper.exists(ConfigurationHelper.CONFIG_FOLDER)) {
-      FileHelper.mkdir(ConfigurationHelper.CONFIG_FOLDER);
+    if (!new File({ file: ConfigurationHelper.CONFIG_FOLDER }).exists()) {
+      new File({ file: ConfigurationHelper.CONFIG_FOLDER }).mkdir();
     }
 
-    if (!FileHelper.exists(ConfigurationHelper.CONFIG_FILE)) {
+    if (!new File({ file: ConfigurationHelper.CONFIG_FILE }).exists()) {
       ConfigurationHelper.CONFIG_MAP = defaultConfig;
       ConfigurationHelper.notify();
       ConfigurationHelper.persist();

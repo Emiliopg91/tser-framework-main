@@ -75,4 +75,73 @@ export class File {
   public exists(): boolean {
     return fs.existsSync(this.getAbsolutePath());
   }
+
+  public mkdir(recursive: boolean = true): void {
+    fs.mkdirSync(this.getAbsolutePath(), { recursive: recursive });
+  }
+
+  public list(): Array<File> {
+    const res: Array<File> = [];
+    fs.readdirSync(this.getAbsolutePath()).forEach((f) => {
+      res.push(new File({ file: f, parentFile: this }));
+    });
+    return res;
+  }
+
+  public delete(): void {
+    if (this.isDirectory()) {
+      if (this.list().length == 0) fs.rmdirSync(this.getAbsolutePath());
+    } else {
+      fs.rmSync(this.getAbsolutePath());
+    }
+  }
+
+  public copy(dst: File): void {
+    fs.copyFileSync(this.getAbsolutePath(), dst.getAbsolutePath());
+  }
+
+  public move(dst: File): void {
+    fs.renameSync(this.getAbsolutePath(), dst.getAbsolutePath());
+  }
+
+  public getLastModified(): number {
+    return Math.trunc(fs.statSync(this.getAbsolutePath()).mtimeMs);
+  }
+
+  public setLastModified(date: number): void {
+    fs.utimesSync(this.getAbsolutePath(), new Date(date), new Date(date));
+  }
+
+  public static walkFileTree(
+    pathF: Path,
+    preVisitDir?: (path: Path) => FileTreeAction,
+    postVisitDir?: (path: Path) => void,
+    visitFile?: (path: Path) => void
+  ): void {
+    let action = FileTreeAction.CONTINUE;
+
+    const files = pathF.toFile().list();
+    for (const file of files) {
+      if (file.isDirectory()) {
+        if (preVisitDir) {
+          action = preVisitDir(file.toPath());
+        }
+        if (action == FileTreeAction.CONTINUE) {
+          File.walkFileTree(file.toPath(), preVisitDir, postVisitDir, visitFile);
+          if (postVisitDir) {
+            postVisitDir(file.toPath());
+          }
+        }
+      } else {
+        if (visitFile) {
+          visitFile(file.toPath());
+        }
+      }
+    }
+  }
+}
+
+export enum FileTreeAction {
+  CONTINUE,
+  SKIP_SUBTREE
 }
