@@ -12,12 +12,12 @@ export class Path {
     }
   }
 
-  public resolve(relative: string): string {
-    return path.resolve(this.node, relative);
+  public resolve(relative: string): Path {
+    return new Path(path.resolve(this.node, relative));
   }
 
-  public relative(to: string): string {
-    return path.relative(this.node, to);
+  public relative(to: string): Path {
+    return new Path(path.relative(this.node, to));
   }
 
   public toFile(): File {
