@@ -1,36 +1,39 @@
 import fs from 'fs';
 import path from 'path';
 
+import { Path } from './Path';
+
 export interface FileParameters {
   file: string;
-  parentFile?: File;
+  parentPath?: Path;
   parent?: string;
 }
 
 export class File {
   private fileName: string;
-  private parent: string;
-  private absolutePath: string;
+  private parent: Path;
 
   public constructor(params: FileParameters) {
     if (params.parent) {
-      params.parentFile = new File({ file: params.parent });
+      params.parentPath = new Path(params.parent);
     }
 
-    if (params.parentFile) {
+    if (params.parentPath) {
       this.fileName = params.file;
-      this.parent = params.parentFile.getAbsolutePath();
-      this.absolutePath = this.parent + path.sep + this.fileName;
+      this.parent = params.parentPath;
     } else {
-      if (params.file.includes(path.sep)) {
-        const lastSlash = params.file.lastIndexOf(path.sep);
+      const lastSlash = params.file.lastIndexOf(path.sep);
+      if (path.isAbsolute(params.file)) {
         this.fileName = params.file.substring(lastSlash + 1);
-        this.parent = params.file.substring(0, lastSlash);
-        this.absolutePath = params.file;
+        this.parent = new Path(params.file.substring(0, lastSlash));
       } else {
-        this.fileName = params.file;
-        this.parent = __dirname;
-        this.absolutePath = this.parent + path.sep + this.fileName;
+        if (lastSlash > -1) {
+          this.fileName = params.file.substring(lastSlash + 1);
+          this.parent = new Path(path.join(__dirname, params.file.substring(0, lastSlash)));
+        } else {
+          this.fileName = params.file;
+          this.parent = new Path(__dirname);
+        }
       }
     }
   }
@@ -44,22 +47,22 @@ export class File {
   }
 
   public getAbsolutePath(): string {
-    return this.absolutePath;
+    return path.join(this.parent.getPath(), this.fileName);
   }
 
   public getParent(): string {
-    return this.parent;
+    return this.parent.getPath();
   }
 
   public getParentFile(): File {
-    return new File({ file: this.parent });
+    return this.parent.toFile();
   }
 
   public isDirectory(): boolean {
-    return fs.statSync(this.absolutePath).isDirectory();
+    return fs.statSync(this.getAbsolutePath()).isDirectory();
   }
 
   public exists(): boolean {
-    return fs.existsSync(this.absolutePath);
+    return fs.existsSync(this.getAbsolutePath());
   }
 }
