@@ -26,7 +26,9 @@ declare global {
  * Represents a logging utility for frontend.
  */
 export class LoggerMain {
-  private constructor() {}
+  constructor(label: string) {
+    this.category = label;
+  }
 
   private static MUTEX: Mutex = new Mutex();
 
@@ -40,6 +42,8 @@ export class LoggerMain {
   private static CURRENT_LEVEL = LogLevel.INFO;
 
   private static TABS = 0;
+
+  private category: string;
 
   /**
    * Initializes the LoggerMain.
@@ -58,7 +62,7 @@ export class LoggerMain {
     LoggerMain.CURRENT_LEVEL = LogLevel[level as keyof typeof LogLevel];
 
     log.addLevel('system', 2);
-    log.default.scope.defaultLabel = 'electron';
+    log.default.scope.defaultLabel = 'runtime';
 
     log.transports.file.resolvePathFn = (): string => LoggerMain.LOG_FILE;
     log.transports.file.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
@@ -70,14 +74,17 @@ export class LoggerMain {
     console.logFile = (): string => {
       return LoggerMain.LOG_FILE;
     };
+
+    const logger = new LoggerMain('console');
+
     console.addTab = LoggerMain.addTab;
     console.removeTab = LoggerMain.removeTab;
-    console.debug = LoggerMain.debug;
-    console.info = LoggerMain.info;
-    console.log = LoggerMain.info;
-    console.warn = LoggerMain.warn;
-    console.error = LoggerMain.error;
-    console.system = LoggerMain.system;
+    console.debug = logger.debug;
+    console.info = logger.info;
+    console.log = logger.info;
+    console.warn = logger.warn;
+    console.error = logger.error;
+    console.system = logger.system;
   }
 
   public static addTab(): void {
@@ -105,7 +112,7 @@ export class LoggerMain {
         if (LoggerMain.isLevelEnabled(lvl)) {
           const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
           const logEntry = `${tabs}${loggerArgsToString(...args)}`;
-          const logger = log.scope(category.padEnd(8, ' '));
+          const logger = log.scope(category.padEnd(15, ' '));
           switch (lvl) {
             case LogLevel.DEBUG:
               logger.debug(logEntry);
@@ -150,7 +157,6 @@ export class LoggerMain {
             .then(() => {
               new File({ file: LoggerMain.LOG_FILE }).delete();
               FileHelper.append(LoggerMain.LOG_FILE, 'Rotated log file to ' + zipFile + '\n');
-              LoggerMain.info('Rotated log file to ' + zipFile);
               resolve();
             })
             .catch(() => {
@@ -178,39 +184,39 @@ export class LoggerMain {
    * Logs a debug message.
    * @param args - The message arguments.
    */
-  public static debug(...args: any): void {
-    LoggerMain.log(LogLevel.DEBUG, 'main', ...args);
+  public debug(...args: any): void {
+    LoggerMain.log(LogLevel.DEBUG, this.category, ...args);
   }
 
   /**
    * Logs an info message.
    * @param args - The message arguments.
    */
-  public static info(...args: any): void {
-    LoggerMain.log(LogLevel.INFO, 'main', ...args);
+  public info(...args: any): void {
+    LoggerMain.log(LogLevel.INFO, this.category, ...args);
   }
 
   /**
    * Logs a system message.
    * @param args - The message arguments.
    */
-  public static system(...args: any): void {
-    LoggerMain.log(LogLevel.SYSTEM, 'main', ...args);
+  public system(...args: any): void {
+    LoggerMain.log(LogLevel.SYSTEM, this.category, ...args);
   }
 
   /**
    * Logs a warning message.
    * @param args - The message arguments.
    */
-  public static warn(...args: any): void {
-    LoggerMain.log(LogLevel.WARN, 'main', ...args);
+  public warn(...args: any): void {
+    LoggerMain.log(LogLevel.WARN, this.category, ...args);
   }
 
   /**
    * Logs an error message.
    * @param args - The message arguments.
    */
-  public static error(...args: any): void {
-    LoggerMain.log(LogLevel.ERROR, 'main', ...args);
+  public error(...args: any): void {
+    LoggerMain.log(LogLevel.ERROR, this.category, ...args);
   }
 }

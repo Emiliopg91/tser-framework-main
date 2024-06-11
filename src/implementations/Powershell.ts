@@ -14,6 +14,7 @@ export class Powershell {
   private static ENTRIES: Array<Entry> = [];
   private static CURRENT: Entry | undefined = undefined;
   private static OUTPUT: string = '';
+  private static LOGGER = new LoggerMain('Powershell');
 
   public static async initialize(): Promise<void> {
     const promise: Promise<void> = new Promise<void>((resolve) => {
@@ -23,7 +24,7 @@ export class Powershell {
 
         if (!Powershell.READY) {
           if (lines[lines.length - 1].startsWith('PS ')) {
-            LoggerMain.debug('Powershell ready');
+            Powershell.LOGGER.debug('Powershell ready');
             Powershell.READY = true;
             resolve();
           }

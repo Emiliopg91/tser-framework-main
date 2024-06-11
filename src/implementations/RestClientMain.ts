@@ -9,6 +9,8 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { LoggerMain } from './LoggerMain';
 
 export class RestClientMain {
+  private static LOGGER = new LoggerMain('RestClientMain');
+
   private constructor() {}
 
   public static invoke<T>(request: RestClientRequest<T>): Promise<RestClientResponse<T>> {
@@ -47,7 +49,7 @@ export class RestClientMain {
         msg += '\n     Body: ' + body;
       }
 
-      LoggerMain.info(msg);
+      RestClientMain.LOGGER.info(msg);
       axios(reqConfig)
         .then((response) => {
           resolve(RestClientMain.dealResponse(t0, request, response));
@@ -57,7 +59,7 @@ export class RestClientMain {
           if (err.response && err.response.status) {
             resolve(RestClientMain.dealResponse(t0, request, err.response));
           } else {
-            LoggerMain.error(
+            RestClientMain.LOGGER.error(
               'Error invoking ' + request.url + ' after ' + (Date.now() - t0) + 'ms',
               err
             );
@@ -98,7 +100,7 @@ export class RestClientMain {
       }
       msg += '\n     Body: ' + body;
     }
-    LoggerMain.info(msg);
+    RestClientMain.LOGGER.info(msg);
     return {
       status: response.status,
       headers: JSON.parse(JSON.stringify(response.headers)),

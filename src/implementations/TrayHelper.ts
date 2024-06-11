@@ -5,37 +5,38 @@ import { LoggerMain } from './LoggerMain';
 import { TranslatorMain } from './TranslatorMain';
 
 export class TrayBuilder {
-  private iconPath: string;
-  private toolTip: string | null = null;
-  private contextMenu: Array<MenuItemConstructorOptions> | null = null;
+  private ICON_PATH: string;
+  private TOOLTIP: string | null = null;
+  private CONTEXT_MENU: Array<MenuItemConstructorOptions> | null = null;
+  private static LOGGER = new LoggerMain('TrayBuilder');
 
   public static builder(iconPath: string): TrayBuilder {
     return new TrayBuilder(iconPath);
   }
 
   private constructor(iconPath: string) {
-    this.iconPath = iconPath;
+    this.ICON_PATH = iconPath;
   }
 
   public withToolTip(text: string): TrayBuilder {
-    this.toolTip = text;
+    this.TOOLTIP = text;
     return this;
   }
 
   public withMenu(menu: Array<MenuItemConstructorOptions>): TrayBuilder {
-    this.contextMenu = menu;
+    this.CONTEXT_MENU = menu;
     return this;
   }
 
   public build(): Tray {
     try {
-      const tray = new Tray(nativeImage.createFromPath(this.iconPath));
-      if (this.toolTip) {
-        tray.setToolTip(this.toolTip);
+      const tray = new Tray(nativeImage.createFromPath(this.ICON_PATH));
+      if (this.TOOLTIP) {
+        tray.setToolTip(this.TOOLTIP);
       }
 
-      if (this.contextMenu) {
-        const menu = JsonUtils.modifyObject(this.contextMenu, ['label'], (_, value: unknown) => {
+      if (this.CONTEXT_MENU) {
+        const menu = JsonUtils.modifyObject(this.CONTEXT_MENU, ['label'], (_, value: unknown) => {
           return TranslatorMain.translate(value as string);
         });
         tray.setContextMenu(Menu.buildFromTemplate(menu));
@@ -43,7 +44,7 @@ export class TrayBuilder {
 
       return tray;
     } catch (error) {
-      LoggerMain.error('Error creating tray icon', error);
+      TrayBuilder.LOGGER.error('Error creating tray icon', error);
       throw error;
     }
   }
