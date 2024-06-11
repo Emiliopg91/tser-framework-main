@@ -1,18 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DefaulLevel, LogLevel, loggerArgsToString } from '@tser-framework/commons';
 import { Mutex } from 'async-mutex';
-import { LogLevel as ELogLevel } from 'electron-log';
-import log from 'electron-log/main';
 import path from 'path';
 
 import { File } from './File';
 import { FileHelper } from './FileHelper';
 
-declare module 'electron-log' {
-  interface LogFunctions {
-    system(...params: any[]): void;
-  }
-}
 declare global {
   interface Console {
     logFile(): string;
@@ -29,6 +22,8 @@ export class LoggerMain {
   constructor(label: string) {
     this.category = label;
   }
+
+  private static CONSOLE_LOG = console.log;
 
   private static MUTEX: Mutex = new Mutex();
 
@@ -61,22 +56,11 @@ export class LoggerMain {
     const level: string = process.env.LOG_LEVEL || DefaulLevel;
     LoggerMain.CURRENT_LEVEL = LogLevel[level as keyof typeof LogLevel];
 
-    log.addLevel('system', 2);
-    log.default.scope.defaultLabel = 'runtime';
-
-    log.transports.file.resolvePathFn = (): string => LoggerMain.LOG_FILE;
-    log.transports.file.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
-    log.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} > {text}';
-
-    log.transports.console.level = LogLevel[LoggerMain.CURRENT_LEVEL].toLowerCase() as ELogLevel;
-    log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} > {text}';
-
     console.logFile = (): string => {
       return LoggerMain.LOG_FILE;
     };
 
     const logger = new LoggerMain('console');
-
     console.addTab = LoggerMain.addTab;
     console.removeTab = LoggerMain.removeTab;
     console.debug = logger.debug;
@@ -107,29 +91,26 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static log(lvl: LogLevel, category: string, ...args: any): void {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    const hh = String(today.getHours()).padStart(2, '0');
+    const MM = String(today.getMinutes()).padStart(2, '0');
+    const ss = String(today.getSeconds()).padStart(2, '0');
+    const sss = String(today.getMilliseconds()).padEnd(3, '0');
+    const date = `${mm}/${dd}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
+
     LoggerMain.MUTEX.acquire().then((release) => {
-      LoggerMain.archiveLogFile().then(async () => {
+      LoggerMain.archiveLogFile().then(() => {
         if (LoggerMain.isLevelEnabled(lvl)) {
           const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
-          const logEntry = `${tabs}${loggerArgsToString(...args)}`;
-          const logger = log.scope(category.padEnd(20, ' '));
-          switch (lvl) {
-            case LogLevel.DEBUG:
-              logger.debug(logEntry);
-              break;
-            case LogLevel.INFO:
-              logger.info(logEntry);
-              break;
-            case LogLevel.SYSTEM:
-              logger.system(logEntry);
-              break;
-            case LogLevel.WARN:
-              logger.warn(logEntry);
-              break;
-            case LogLevel.ERROR:
-              logger.error(logEntry);
-              break;
-          }
+          const logEntry = `[${date}][${LogLevel[lvl].padEnd(
+            6,
+            ' '
+          )}] (${category.padEnd(20, ' ')}) - ${tabs}${loggerArgsToString(...args)}`;
+          FileHelper.append(LoggerMain.LOG_FILE, logEntry + '\n');
+          LoggerMain.CONSOLE_LOG(logEntry);
         }
         release();
       });
