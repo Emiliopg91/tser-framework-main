@@ -3,6 +3,7 @@ import { DefaulLevel, LogLevel, loggerArgsToString } from '@tser-framework/commo
 import { Mutex } from 'async-mutex';
 import path from 'path';
 
+import { DateUtils } from './DateUtils';
 import { File } from './File';
 import { FileHelper } from './FileHelper';
 
@@ -91,16 +92,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static log(lvl: LogLevel, category: string, ...args: any): void {
-    const today = new Date();
-    const dd = String(today.getDate()).padStart(2, '0');
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const yyyy = today.getFullYear();
-    const hh = String(today.getHours()).padStart(2, '0');
-    const MM = String(today.getMinutes()).padStart(2, '0');
-    const ss = String(today.getSeconds()).padStart(2, '0');
-    const sss = String(today.getMilliseconds()).padEnd(3, '0');
-    const date = `${dd}/${mm}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
-
+    const date = DateUtils.dateToFormattedString(new Date());
     LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.archiveLogFile().then(() => {
         if (LoggerMain.isLevelEnabled(lvl)) {

@@ -1,6 +1,7 @@
 export { AppUpdater } from './implementations/AppUpdater';
 export { ConfigurationHelper } from './implementations/ConfigurationHelper';
 export { CryptoHelper } from './implementations/CryptoHelper';
+export { DateUtils } from './implementations/DateUtils';
 export { File, FileTreeAction, FileParameters } from './implementations/File';
 export { FileHelper } from './implementations/FileHelper';
 export { LoggerMain } from './implementations/LoggerMain';
