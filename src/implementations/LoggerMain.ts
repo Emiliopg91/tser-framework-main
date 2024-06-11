@@ -112,7 +112,7 @@ export class LoggerMain {
         if (LoggerMain.isLevelEnabled(lvl)) {
           const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
           const logEntry = `${tabs}${loggerArgsToString(...args)}`;
-          const logger = log.scope(category.padEnd(15, ' '));
+          const logger = log.scope(category.padEnd(20, ' '));
           switch (lvl) {
             case LogLevel.DEBUG:
               logger.debug(logEntry);
