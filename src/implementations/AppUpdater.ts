@@ -4,7 +4,7 @@ import { AppUpdaterEvents } from 'electron-updater/out/AppUpdater';
 import { LoggerMain } from './LoggerMain';
 
 export class AppUpdater {
-  constructor() {
+  public constructor() {
     autoUpdater.logger = new LoggerMain('AppUpdater');
     autoUpdater.autoDownload = true;
     autoUpdater.disableWebInstaller = true;
