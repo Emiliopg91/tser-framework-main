@@ -99,7 +99,7 @@ export class LoggerMain {
     const MM = String(today.getMinutes()).padStart(2, '0');
     const ss = String(today.getSeconds()).padStart(2, '0');
     const sss = String(today.getMilliseconds()).padEnd(3, '0');
-    const date = `${mm}/${dd}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
+    const date = `${dd}/${mm}/${yyyy} ${hh}:${MM}:${ss}.${sss}`;
 
     LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.archiveLogFile().then(() => {
