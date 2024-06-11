@@ -1,3 +1,4 @@
+export { AppUpdater } from './implementations/AppUpdater';
 export { ConfigurationHelper } from './implementations/ConfigurationHelper';
 export { CryptoHelper } from './implementations/CryptoHelper';
 export { File, FileTreeAction, FileParameters } from './implementations/File';
