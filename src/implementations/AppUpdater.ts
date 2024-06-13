@@ -11,9 +11,11 @@ import { LoggerMain } from './LoggerMain';
 
 export class AppUpdater {
   private static LOGGER = new LoggerMain('AppUpdater');
-  private static CHECK_TIMEOUT = 60 * 1000;
 
-  public constructor(callback?: (event: UpdateDownloadedEvent) => void) {
+  public constructor(
+    checkInterval = 24 * 60 * 60 * 1000,
+    callback?: (event: UpdateDownloadedEvent) => void
+  ) {
     autoUpdater.logger = {
       info(..._args: any): void {},
       warn(..._args: any): void {},
@@ -31,11 +33,11 @@ export class AppUpdater {
     autoUpdater.on('update-not-available', (): void => {
       setTimeout(async () => {
         await autoUpdater.checkForUpdates();
-      }, AppUpdater.CHECK_TIMEOUT);
+      }, checkInterval);
       AppUpdater.LOGGER.system('No updates found');
       AppUpdater.LOGGER.system(
         'Next update check: ' +
-          DateUtils.dateToFormattedString(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
+          DateUtils.dateToFormattedString(new Date(new Date().getTime() + checkInterval))
       );
     });
 
