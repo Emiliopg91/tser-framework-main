@@ -53,11 +53,6 @@ export class AppUpdater {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public on(event: keyof AppUpdaterEvents, callback: (...args: any) => void): void {
-    autoUpdater.on(event, callback);
-  }
-
   public quitAndInstall(isSilent?: boolean, isForceRunAfter?: boolean): void {
     autoUpdater.quitAndInstall(isSilent, isForceRunAfter);
   }
