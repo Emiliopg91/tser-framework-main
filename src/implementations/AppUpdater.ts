@@ -6,6 +6,7 @@
 import { UpdateDownloadedEvent, autoUpdater } from 'electron-updater';
 
 import { DateUtils } from './DateUtils';
+import { File } from './File';
 import { LoggerMain } from './LoggerMain';
 
 export class AppUpdater {
@@ -47,11 +48,18 @@ export class AppUpdater {
     });
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent): void => {
-      const timeDif = Date.now() - (this.downloadStartTime as number);
+      const timeDif = Math.round(Date.now() - (this.downloadStartTime as number) / 1000);
 
       this.downloadStartTime = undefined;
+      AppUpdater.LOGGER.system('Update downloaded to ' + info.downloadedFile);
       AppUpdater.LOGGER.system(
-        'Downloaded to ' + info.downloadedFile + 'in ' + Math.round(timeDif / 1000)
+        'Transfered ' +
+          new File({ file: info.downloadedFile }).getSize() +
+          ' in ' +
+          timeDif +
+          ' seconds (' +
+          this.humanFileSize(new File({ file: info.downloadedFile }).getSize() / timeDif) +
+          '/s)'
       );
       if (callback) {
         callback(info);
@@ -63,5 +71,26 @@ export class AppUpdater {
 
   public quitAndInstall(isSilent?: boolean, isForceRunAfter?: boolean): void {
     autoUpdater.quitAndInstall(isSilent, isForceRunAfter);
+  }
+
+  private humanFileSize(bytes: number, si = false, dp = 1): string {
+    const thresh = si ? 1000 : 1024;
+
+    if (Math.abs(bytes) < thresh) {
+      return bytes + ' B';
+    }
+
+    const units = si
+      ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+    let u = -1;
+    const r = 10 ** dp;
+
+    do {
+      bytes /= thresh;
+      ++u;
+    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+    return bytes.toFixed(dp) + ' ' + units[u];
   }
 }
