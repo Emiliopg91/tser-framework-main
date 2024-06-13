@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { app } from 'electron';
 import { UpdateDownloadedEvent, autoUpdater } from 'electron-updater';
 
 import { DateUtils } from './DateUtils';
