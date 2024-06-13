@@ -34,6 +34,7 @@ export class AppUpdater {
       setTimeout(async () => {
         await autoUpdater.checkForUpdates();
       }, AppUpdater.CHECK_TIMEOUT);
+      AppUpdater.LOGGER.system('No updates found');
       AppUpdater.LOGGER.system(
         'Next update check: ' +
           DateUtils.dateToFormattedString(new Date(new Date().getTime() + 24 * 60 * 60 * 1000))
