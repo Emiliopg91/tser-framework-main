@@ -63,18 +63,7 @@ export class AppUpdater {
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent): void => {
       AppUpdater.MUTEX.acquire().then((release) => {
-        const timeDif = Math.round(Date.now() - (this.getDownloadStartTime() as number) / 1000);
-
         AppUpdater.LOGGER.system('Update downloaded to ' + info.downloadedFile);
-        AppUpdater.LOGGER.system(
-          'Transfered ' +
-            this.humanFileSize(new File({ file: info.downloadedFile }).getSize()) +
-            ' in ' +
-            timeDif +
-            ' seconds (' +
-            this.humanFileSize(new File({ file: info.downloadedFile }).getSize() / timeDif) +
-            '/s)'
-        );
         if (callback) {
           callback(info);
         }
