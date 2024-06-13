@@ -3,25 +3,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Mutex } from 'async-mutex';
 import { UpdateDownloadedEvent, autoUpdater } from 'electron-updater';
 
 import { DateUtils } from './DateUtils';
-import { File } from './File';
 import { LoggerMain } from './LoggerMain';
 
 export class AppUpdater {
-  private static MUTEX = new Mutex();
   private static LOGGER = new LoggerMain('AppUpdater');
-  private downloadStartTime: number | undefined = undefined;
-
-  private getDownloadStartTime(): number {
-    return this.downloadStartTime as number;
-  }
-
-  private setDownloadStartTime(): void {
-    this.downloadStartTime = Date.now();
-  }
 
   public constructor(
     checkInterval = 24 * 60 * 60 * 1000,
@@ -53,23 +41,18 @@ export class AppUpdater {
     });
 
     autoUpdater.on('update-available', (info): void => {
-      AppUpdater.MUTEX.acquire().then((release) => {
-        this.setDownloadStartTime();
-        AppUpdater.LOGGER.system('Available ' + info.version + ' update, starting download');
-
-        release();
-      });
+      AppUpdater.LOGGER.system('Available ' + info.version + ' update, starting download');
     });
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent): void => {
-      AppUpdater.MUTEX.acquire().then((release) => {
-        AppUpdater.LOGGER.system('Update downloaded to ' + info.downloadedFile);
-        if (callback) {
-          callback(info);
-        }
+      AppUpdater.LOGGER.system('Update downloaded to ' + info.downloadedFile);
+      if (callback) {
+        callback(info);
+      }
+    });
 
-        release();
-      });
+    autoUpdater.on('error', (error: Error, message: string | undefined): void => {
+      AppUpdater.LOGGER.error(message ? message : 'Error in application updater', error);
     });
 
     autoUpdater.checkForUpdates();
@@ -77,26 +60,5 @@ export class AppUpdater {
 
   public quitAndInstall(isSilent?: boolean, isForceRunAfter?: boolean): void {
     autoUpdater.quitAndInstall(isSilent, isForceRunAfter);
-  }
-
-  private humanFileSize(bytes: number, si = false, dp = 1): string {
-    const thresh = si ? 1000 : 1024;
-
-    if (Math.abs(bytes) < thresh) {
-      return bytes + ' B';
-    }
-
-    const units = si
-      ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-      : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-    let u = -1;
-    const r = 10 ** dp;
-
-    do {
-      bytes /= thresh;
-      ++u;
-    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
-    return bytes.toFixed(dp) + ' ' + units[u];
   }
 }
