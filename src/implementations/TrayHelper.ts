@@ -1,5 +1,6 @@
 import { JsonUtils } from '@tser-framework/commons';
-import { Menu, MenuItemConstructorOptions, Tray, nativeImage } from 'electron/main';
+import { nativeImage } from 'electron/common';
+import { Menu, MenuItemConstructorOptions, Tray } from 'electron/main';
 
 import { LoggerMain } from './LoggerMain';
 import { TranslatorMain } from './TranslatorMain';

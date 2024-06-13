@@ -1,5 +1,6 @@
 import { is } from '@electron-toolkit/utils';
-import { BrowserWindow, BrowserWindowConstructorOptions, shell } from 'electron/main';
+import { shell } from 'electron/common';
+import { BrowserWindow, BrowserWindowConstructorOptions } from 'electron/main';
 import { join } from 'path';
 
 import { WindowConfig } from '../types/WindowConfig';
