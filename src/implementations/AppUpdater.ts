@@ -3,9 +3,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Event, app } from 'electron';
+import { app } from 'electron';
 import { UpdateDownloadedEvent, autoUpdater } from 'electron-updater';
-import { AppUpdaterEvents } from 'electron-updater/out/AppUpdater';
 
 import { DateUtils } from './DateUtils';
 import { LoggerMain } from './LoggerMain';
