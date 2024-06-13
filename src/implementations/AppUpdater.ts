@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Mutex } from 'async-mutex';
 import { UpdateDownloadedEvent, autoUpdater } from 'electron-updater';
 
 import { DateUtils } from './DateUtils';
@@ -10,6 +11,7 @@ import { File } from './File';
 import { LoggerMain } from './LoggerMain';
 
 export class AppUpdater {
+  private static MUTEX = new Mutex();
   private static LOGGER = new LoggerMain('AppUpdater');
   private downloadStartTime: number | undefined = undefined;
 
@@ -43,27 +45,34 @@ export class AppUpdater {
     });
 
     autoUpdater.on('update-available', (info): void => {
-      this.downloadStartTime = Date.now();
-      AppUpdater.LOGGER.system('Available ' + info.version + ' update, starting download');
+      AppUpdater.MUTEX.acquire().then((release) => {
+        this.downloadStartTime = Date.now();
+        AppUpdater.LOGGER.system('Available ' + info.version + ' update, starting download');
+
+        release();
+      });
     });
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent): void => {
-      const timeDif = Math.round(Date.now() - (this.downloadStartTime as number) / 1000);
+      AppUpdater.MUTEX.acquire().then((release) => {
+        const timeDif = Math.round(Date.now() - (this.downloadStartTime as number) / 1000);
 
-      this.downloadStartTime = undefined;
-      AppUpdater.LOGGER.system('Update downloaded to ' + info.downloadedFile);
-      AppUpdater.LOGGER.system(
-        'Transfered ' +
-          new File({ file: info.downloadedFile }).getSize() +
-          ' in ' +
-          timeDif +
-          ' seconds (' +
-          this.humanFileSize(new File({ file: info.downloadedFile }).getSize() / timeDif) +
-          '/s)'
-      );
-      if (callback) {
-        callback(info);
-      }
+        AppUpdater.LOGGER.system('Update downloaded to ' + info.downloadedFile);
+        AppUpdater.LOGGER.system(
+          'Transfered ' +
+            this.humanFileSize(new File({ file: info.downloadedFile }).getSize()) +
+            ' in ' +
+            timeDif +
+            ' seconds (' +
+            this.humanFileSize(new File({ file: info.downloadedFile }).getSize() / timeDif) +
+            '/s)'
+        );
+        if (callback) {
+          callback(info);
+        }
+
+        release();
+      });
     });
 
     autoUpdater.checkForUpdates();
