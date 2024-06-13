@@ -54,7 +54,7 @@ export class AppUpdater {
 
     autoUpdater.on('update-available', (info): void => {
       AppUpdater.MUTEX.acquire().then((release) => {
-        this.setDownloadStartTime;
+        this.setDownloadStartTime();
         AppUpdater.LOGGER.system('Available ' + info.version + ' update, starting download');
 
         release();
