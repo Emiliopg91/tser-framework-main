@@ -1,4 +1,4 @@
-import { BrowserWindowConstructorOptions } from 'electron';
+import { BrowserWindowConstructorOptions } from 'electron/main';
 
 export interface WindowConfig {
   hideMenu: boolean;

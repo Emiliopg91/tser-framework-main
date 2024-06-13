@@ -1,4 +1,4 @@
-import { safeStorage } from 'electron';
+import { safeStorage } from 'electron/main';
 
 import { OSHelper } from './OSHelper';
 

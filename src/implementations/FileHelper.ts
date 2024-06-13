@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import archiver from 'archiver';
-import { app, shell } from 'electron';
+import { app, shell } from 'electron/main';
 import * as fs from 'fs';
 import path from 'path';
 

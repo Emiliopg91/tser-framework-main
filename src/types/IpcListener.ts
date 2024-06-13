@@ -5,7 +5,7 @@ import {
   RestClientRequest,
   RestClientResponse
 } from '@tser-framework/commons';
-import { IpcMainInvokeEvent } from 'electron';
+import { IpcMainInvokeEvent } from 'electron/main';
 
 import { ConfigurationHelper } from '../implementations/ConfigurationHelper';
 import { LoggerMain } from '../implementations/LoggerMain';

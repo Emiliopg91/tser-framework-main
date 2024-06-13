@@ -1,4 +1,4 @@
-import { Notification, app } from 'electron';
+import { Notification, app } from 'electron/main';
 
 import { OSHelper } from './OSHelper';
 
