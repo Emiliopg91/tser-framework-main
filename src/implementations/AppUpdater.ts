@@ -13,7 +13,7 @@ import { LoggerMain } from './LoggerMain';
 export class AppUpdater {
   private static MUTEX = new Mutex();
   private static LOGGER = new LoggerMain('AppUpdater');
-  private downloadStartTime: number | undefined = undefined;
+  private static DWL_START_TIME: number | undefined = undefined;
 
   public constructor(
     checkInterval = 24 * 60 * 60 * 1000,
@@ -46,7 +46,7 @@ export class AppUpdater {
 
     autoUpdater.on('update-available', (info): void => {
       AppUpdater.MUTEX.acquire().then((release) => {
-        this.downloadStartTime = Date.now();
+        AppUpdater.DWL_START_TIME = Date.now();
         AppUpdater.LOGGER.system('Available ' + info.version + ' update, starting download');
 
         release();
@@ -55,7 +55,7 @@ export class AppUpdater {
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent): void => {
       AppUpdater.MUTEX.acquire().then((release) => {
-        const timeDif = Math.round(Date.now() - (this.downloadStartTime as number) / 1000);
+        const timeDif = Math.round(Date.now() - (AppUpdater.DWL_START_TIME as number) / 1000);
 
         AppUpdater.LOGGER.system('Update downloaded to ' + info.downloadedFile);
         AppUpdater.LOGGER.system(
