@@ -10,6 +10,7 @@ import { LoggerMain } from './LoggerMain';
 
 export class AppUpdater {
   private static LOGGER = new LoggerMain('AppUpdater');
+  private downloadStartTime: number | undefined = undefined;
 
   public constructor(
     checkInterval = 24 * 60 * 60 * 1000,
@@ -41,11 +42,17 @@ export class AppUpdater {
     });
 
     autoUpdater.on('update-available', (info): void => {
+      this.downloadStartTime = Date.now();
       AppUpdater.LOGGER.system('Available ' + info.version + ' update, starting download');
     });
 
     autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent): void => {
-      AppUpdater.LOGGER.system('Finished download');
+      const timeDif = Date.now() - (this.downloadStartTime as number);
+
+      this.downloadStartTime = undefined;
+      AppUpdater.LOGGER.system(
+        'Downloaded to ' + info.downloadedFile + 'in ' + Math.round(timeDif / 1000)
+      );
       if (callback) {
         callback(info);
       }

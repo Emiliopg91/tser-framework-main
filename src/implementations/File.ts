@@ -113,6 +113,10 @@ export class File {
     fs.utimesSync(this.getAbsolutePath(), new Date(date), new Date(date));
   }
 
+  public getSize(): number {
+    return fs.statSync(this.getAbsolutePath()).size;
+  }
+
   public static walkFileTree(
     pathF: Path,
     preVisitDir?: (path: Path) => FileTreeAction,
