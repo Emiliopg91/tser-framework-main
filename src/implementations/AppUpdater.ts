@@ -31,7 +31,7 @@ export class AppUpdater {
       AppUpdater.LOGGER.info('Checking for ' + app.getName() + ' update');
     });
 
-    autoUpdater.on('update-not-available', (info): void => {
+    autoUpdater.on('update-not-available', (): void => {
       setTimeout(async () => {
         await autoUpdater.checkForUpdates();
       }, AppUpdater.CHECK_TIMEOUT);
