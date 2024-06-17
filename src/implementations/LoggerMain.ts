@@ -20,10 +20,6 @@ declare global {
  * Represents a logging utility for frontend.
  */
 export class LoggerMain {
-  constructor(label: string) {
-    this.category = label;
-  }
-
   private static CONSOLE_LOG = console.log;
 
   private static MUTEX: Mutex = new Mutex();
@@ -39,7 +35,11 @@ export class LoggerMain {
 
   private static TABS = 0;
 
-  private category: string;
+  private category: string = 'unknown';
+
+  constructor(label: string) {
+    this.category = label;
+  }
 
   /**
    * Initializes the LoggerMain.
@@ -92,6 +92,9 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public static log(lvl: LogLevel, category: string, ...args: any): void {
+    if (!category) {
+      category = 'Unknown';
+    }
     const date = DateUtils.dateToFormattedString(new Date());
     LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.archiveLogFile().then(() => {
@@ -158,7 +161,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public debug(...args: any): void {
-    LoggerMain.log(LogLevel.DEBUG, this.category, ...args);
+    LoggerMain.log(LogLevel.DEBUG, this ? this.category : 'Unknown', ...args);
   }
 
   /**
@@ -166,7 +169,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public info(...args: any): void {
-    LoggerMain.log(LogLevel.INFO, this.category, ...args);
+    LoggerMain.log(LogLevel.INFO, this ? this.category : 'Unknown', ...args);
   }
 
   /**
@@ -174,7 +177,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public system(...args: any): void {
-    LoggerMain.log(LogLevel.SYSTEM, this.category, ...args);
+    LoggerMain.log(LogLevel.SYSTEM, this ? this.category : 'Unknown', ...args);
   }
 
   /**
@@ -182,7 +185,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public warn(...args: any): void {
-    LoggerMain.log(LogLevel.WARN, this.category, ...args);
+    LoggerMain.log(LogLevel.WARN, this ? this.category : 'Unknown', ...args);
   }
 
   /**
@@ -190,6 +193,6 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public error(...args: any): void {
-    LoggerMain.log(LogLevel.ERROR, this.category, ...args);
+    LoggerMain.log(LogLevel.ERROR, this ? this.category : 'Unknown', ...args);
   }
 }
