@@ -35,7 +35,7 @@ export class LoggerMain {
 
   private static TABS = 0;
 
-  private category: string = 'unknown';
+  private category: string = 'Console';
 
   constructor(label: string) {
     this.category = label;
@@ -93,7 +93,7 @@ export class LoggerMain {
    */
   public static log(lvl: LogLevel, category: string, ...args: any): void {
     if (!category) {
-      category = 'Unknown';
+      category = 'Console';
     }
     const date = DateUtils.dateToFormattedString(new Date());
     LoggerMain.MUTEX.acquire().then((release) => {
@@ -161,7 +161,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public debug(...args: any): void {
-    LoggerMain.log(LogLevel.DEBUG, this ? this.category : 'Unknown', ...args);
+    LoggerMain.log(LogLevel.DEBUG, this ? this.category : 'Console', ...args);
   }
 
   /**
@@ -169,7 +169,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public info(...args: any): void {
-    LoggerMain.log(LogLevel.INFO, this ? this.category : 'Unknown', ...args);
+    LoggerMain.log(LogLevel.INFO, this ? this.category : 'Console', ...args);
   }
 
   /**
@@ -177,7 +177,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public system(...args: any): void {
-    LoggerMain.log(LogLevel.SYSTEM, this ? this.category : 'Unknown', ...args);
+    LoggerMain.log(LogLevel.SYSTEM, this ? this.category : 'Console', ...args);
   }
 
   /**
@@ -185,7 +185,7 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public warn(...args: any): void {
-    LoggerMain.log(LogLevel.WARN, this ? this.category : 'Unknown', ...args);
+    LoggerMain.log(LogLevel.WARN, this ? this.category : 'Console', ...args);
   }
 
   /**
@@ -193,6 +193,6 @@ export class LoggerMain {
    * @param args - The message arguments.
    */
   public error(...args: any): void {
-    LoggerMain.log(LogLevel.ERROR, this ? this.category : 'Unknown', ...args);
+    LoggerMain.log(LogLevel.ERROR, this ? this.category : 'Console', ...args);
   }
 }
