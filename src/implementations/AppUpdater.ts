@@ -26,7 +26,7 @@ export class AppUpdater {
     autoUpdater.disableDifferentialDownload = true;
 
     autoUpdater.on('checking-for-update', (): void => {
-      AppUpdater.LOGGER.info('Checking for update');
+      AppUpdater.LOGGER.info('Checking for updates on ' + autoUpdater.getFeedURL());
     });
 
     autoUpdater.on('update-not-available', (): void => {
