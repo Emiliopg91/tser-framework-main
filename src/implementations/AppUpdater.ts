@@ -24,6 +24,7 @@ export class AppUpdater {
     autoUpdater.disableWebInstaller = true;
     autoUpdater.forceDevUpdateConfig = true;
     autoUpdater.disableDifferentialDownload = true;
+    autoUpdater.autoInstallOnAppQuit = true;
 
     autoUpdater.on('checking-for-update', (): void => {
       AppUpdater.LOGGER.info('Checking for updates');
@@ -58,7 +59,8 @@ export class AppUpdater {
     autoUpdater.checkForUpdates();
   }
 
-  public quitAndInstall(isSilent?: boolean, isForceRunAfter?: boolean): void {
-    autoUpdater.quitAndInstall(isSilent, isForceRunAfter);
+  public quitAndInstall(): void {
+    autoUpdater.autoInstallOnAppQuit = true;
+    process.exit(0);
   }
 }
