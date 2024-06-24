@@ -89,6 +89,10 @@ export class ConfigurationHelper {
     ConfigurationHelper.persist();
   }
 
+  public static setSecretValue(key: string, value: string): void {
+    ConfigurationHelper.setValue<string>(key, CryptoHelper.encryptForUser(value));
+  }
+
   private static persist(): void {
     FileHelper.write(
       ConfigurationHelper.CONFIG_FILE,
