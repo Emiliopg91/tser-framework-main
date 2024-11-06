@@ -20,6 +20,7 @@ declare global {
  * Represents a logging utility for frontend.
  */
 export class LoggerMain {
+  private static logger: LoggerMain = new LoggerMain('LoggerMain');
   private static CONSOLE_LOG = console.log;
 
   private static MUTEX: Mutex = new Mutex();
@@ -46,7 +47,10 @@ export class LoggerMain {
    */
   public static async initialize(): Promise<void> {
     if (!new File({ file: LoggerMain.LOG_FOLDER }).exists()) {
-      new File({ file: LoggerMain.LOG_FOLDER }).mkdir;
+      new File({ file: LoggerMain.LOG_FOLDER }).mkdir();
+    }
+    if (!new File({ file: LoggerMain.LOG_FOLDER }).exists()) {
+      new File({ file: LoggerMain.LOG_FOLDER }).createFile();
     }
     if (!new File({ file: LoggerMain.OLD_FOLDER }).exists()) {
       new File({ file: LoggerMain.OLD_FOLDER }).mkdir();
@@ -154,6 +158,13 @@ export class LoggerMain {
    */
   private static isLevelEnabled(lvl: LogLevel): boolean {
     return LoggerMain.CURRENT_LEVEL <= lvl;
+  }
+
+  public static setLogLevel(lvl: LogLevel): void {
+    if (LoggerMain.CURRENT_LEVEL != lvl) {
+      LoggerMain.logger.info(`Setting log level to ${LogLevel[lvl]}`);
+      LoggerMain.CURRENT_LEVEL = lvl;
+    }
   }
 
   /**

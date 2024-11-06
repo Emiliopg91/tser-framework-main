@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { JsonUtils } from '@tser-framework/commons';
+import { JsonUtils, LogLevel } from '@tser-framework/commons';
 import path from 'path';
 
 import { CryptoHelper } from './CryptoHelper';
 import { File } from './File';
 import { FileHelper } from './FileHelper';
+import { LoggerMain } from './LoggerMain';
 
 export class ConfigurationHelper {
   private constructor() {}
@@ -60,6 +61,10 @@ export class ConfigurationHelper {
       const cfgJson: string = FileHelper.read(ConfigurationHelper.CONFIG_FILE);
       ConfigurationHelper.CONFIG_MAP = JSON.parse(cfgJson);
     }
+
+    LoggerMain.setLogLevel(
+      (ConfigurationHelper.CONFIG_MAP['logger.level'] as LogLevel) || LogLevel.INFO
+    );
   }
 
   public static configAsInterface<T>(): T {

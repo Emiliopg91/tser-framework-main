@@ -80,6 +80,10 @@ export class File {
     fs.mkdirSync(this.getAbsolutePath(), { recursive: recursive });
   }
 
+  public createFile(): void {
+    fs.closeSync(fs.openSync(this.getAbsolutePath(), 'w'));
+  }
+
   public list(): Array<File> {
     const res: Array<File> = [];
     fs.readdirSync(this.getAbsolutePath()).forEach((f) => {
