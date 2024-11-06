@@ -103,7 +103,7 @@ export class LoggerMain {
           const logEntry = `[${date}][${LogLevel[lvl].padEnd(
             6,
             ' '
-          )}][${category.padEnd(20, ' ')}] - ${tabs}${loggerArgsToString(...args)}`;
+          )}][${category.padEnd(20, ' ').substring(0, 20)}] - ${tabs}${loggerArgsToString(...args)}`;
           FileHelper.append(LoggerMain.LOG_FILE, logEntry + '\n');
           LoggerMain.CONSOLE_LOG(logEntry);
         }
