@@ -63,7 +63,8 @@ export class ConfigurationHelper {
     }
 
     LoggerMain.setLogLevel(
-      (ConfigurationHelper.CONFIG_MAP['logger.level'] as LogLevel) || LogLevel.INFO
+      LogLevel[ConfigurationHelper.CONFIG_MAP['logger.level'] as keyof typeof LogLevel] ||
+        LogLevel.INFO
     );
   }
 
