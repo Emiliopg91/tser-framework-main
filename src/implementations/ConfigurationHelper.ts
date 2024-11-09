@@ -62,10 +62,12 @@ export class ConfigurationHelper {
       ConfigurationHelper.CONFIG_MAP = JSON.parse(cfgJson);
     }
 
-    LoggerMain.setLogLevel(
-      LogLevel[ConfigurationHelper.CONFIG_MAP['logger.level'] as keyof typeof LogLevel] ||
-        LogLevel.INFO
-    );
+    if (ConfigurationHelper.getValue('logger.level')) {
+      LoggerMain.setLogLevel(
+        LogLevel[ConfigurationHelper.getValue('logger.level') as keyof typeof LogLevel] ||
+          LogLevel.INFO
+      );
+    }
   }
 
   public static configAsInterface<T>(): T {
