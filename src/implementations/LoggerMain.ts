@@ -34,12 +34,23 @@ export class LoggerMain {
    */
   private static CURRENT_LEVEL = LogLevel.INFO;
 
+  private static CATEGORY_LEVELS: Record<string, LogLevel> = {};
+
+  private static LOGGERS: Record<string, LoggerMain> = {};
+
   private static TABS = 0;
 
   private category: string = 'Console';
 
   constructor(label: string) {
     this.category = label;
+  }
+
+  public static for(category: string): LoggerMain {
+    if (!LoggerMain.LOGGERS[category]) {
+      LoggerMain.LOGGERS[category] = new LoggerMain(category);
+    }
+    return LoggerMain.LOGGERS[category];
   }
 
   /**
@@ -102,7 +113,7 @@ export class LoggerMain {
     const date = DateUtils.dateToFormattedString(new Date());
     LoggerMain.MUTEX.acquire().then((release) => {
       LoggerMain.archiveLogFile().then(() => {
-        if (LoggerMain.isLevelEnabled(lvl)) {
+        if (LoggerMain.isLevelEnabled(category, lvl)) {
           const tabs = ''.padEnd(2 * LoggerMain.TABS, ' ');
           const logEntry = `[${date}][${LogLevel[lvl].padEnd(
             6,
@@ -156,14 +167,20 @@ export class LoggerMain {
    * @param lvl - The log level.
    * @returns True if the log level is enabled, otherwise false.
    */
-  private static isLevelEnabled(lvl: LogLevel): boolean {
-    return LoggerMain.CURRENT_LEVEL <= lvl;
+  private static isLevelEnabled(category: string, lvl: LogLevel): boolean {
+    const level = LoggerMain.CATEGORY_LEVELS[category]
+      ? LoggerMain.CATEGORY_LEVELS[category]
+      : LoggerMain.CURRENT_LEVEL;
+    return level <= lvl;
   }
 
-  public static setLogLevel(lvl: LogLevel): void {
-    if (LoggerMain.CURRENT_LEVEL != lvl) {
-      LoggerMain.logger.info(`Setting log level to ${LogLevel[lvl]}`);
+  public static setLogLevel(category: string, lvl: LogLevel): void {
+    if (category == 'default') {
+      LoggerMain.logger.info(`Setting default log level to ${LogLevel[lvl]}`);
       LoggerMain.CURRENT_LEVEL = lvl;
+    } else {
+      LoggerMain.logger.info(`Setting log level to ${LogLevel[lvl]} for category ${category}`);
+      LoggerMain.CATEGORY_LEVELS[category] = lvl;
     }
   }
 

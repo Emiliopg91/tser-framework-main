@@ -62,9 +62,11 @@ export class ConfigurationHelper {
       ConfigurationHelper.CONFIG_MAP = JSON.parse(cfgJson);
     }
 
-    const cfgLevel = ConfigurationHelper.getValue<string>('logger.level');
-    if (cfgLevel != undefined) {
-      LoggerMain.setLogLevel(LogLevel[cfgLevel as keyof typeof LogLevel]);
+    if (ConfigurationHelper.getValue('logger.levels')) {
+      const cfgLevels = ConfigurationHelper.getValue<Record<string, string>>('logger.levels')!;
+      Object.entries(cfgLevels).forEach(([category, level]) => {
+        LoggerMain.setLogLevel(category, LogLevel[level.toUpperCase() as keyof typeof LogLevel]);
+      });
     }
   }
 
