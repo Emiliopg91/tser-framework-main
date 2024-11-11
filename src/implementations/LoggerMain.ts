@@ -168,9 +168,10 @@ export class LoggerMain {
    * @returns True if the log level is enabled, otherwise false.
    */
   private static isLevelEnabled(category: string, lvl: LogLevel): boolean {
-    const level = LoggerMain.CATEGORY_LEVELS[category]
-      ? LoggerMain.CATEGORY_LEVELS[category]
-      : LoggerMain.CURRENT_LEVEL;
+    const level =
+      LoggerMain.CATEGORY_LEVELS[category] != undefined
+        ? LoggerMain.CATEGORY_LEVELS[category]
+        : LoggerMain.CURRENT_LEVEL;
     return level <= lvl;
   }
 
